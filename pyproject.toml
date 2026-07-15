@@ -1,0 +1,29 @@
+[project]
+name = "ai-triage-engine"
+version = "0.1.0"
+description = "AI-powered diagnostic triage assistant for ABHA-linked PHCs"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "ollama==0.2.1",
+    "pydantic==2.7.1",
+    "fhir.resources==7.1.0",
+    "python-dotenv==1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.2.2",
+    "ruff==0.4.4",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "W", "UP", "B", "C4", "T20"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["eval", "engine"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
