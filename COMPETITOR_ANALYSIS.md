@@ -1,5 +1,5 @@
 # Competitor Analysis Report
-## AI Diagnostic Triage Assistant — India PHC Market Landscape
+## SehatAI — India PHC Market Landscape
 
 ---
 

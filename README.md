@@ -1,6 +1,8 @@
-# AI Diagnostic Triage Assistant
+# SehatAI
 
 **ABHA-Integrated Clinical Decision Support for Primary Health Centres in India**
+
+*Sehat (सेहत) = Health | AI = Artificial Intelligence*
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green.svg)](https://fastapi.tiangolo.com)
@@ -292,5 +294,5 @@ MIT License — see `LICENSE` for details.
 ## Author
 
 **Seikh Imran Ul Minhaj**  
-Capstone Project — AI Diagnostic Triage Assistant for ABHA-linked PHCs  
+Capstone Project — SehatAI for ABHA-linked PHCs  
 July 2026

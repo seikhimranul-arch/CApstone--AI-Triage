@@ -1,5 +1,5 @@
 # Market Requirements Document (MRD)
-## AI Diagnostic Triage Assistant for ABHA-linked PHCs
+## SehatAI — ABHA-Integrated Clinical Decision Support for PHCs
 
 ---
 

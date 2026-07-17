@@ -1,5 +1,5 @@
 # Launch Plan
-## AI Diagnostic Triage Assistant — Phase-Gated Go-to-Market
+## SehatAI — Phase-Gated Go-to-Market
 
 ---
 

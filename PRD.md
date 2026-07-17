@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-## AI Diagnostic Triage Assistant — ABHA-Integrated Decision Support for PHC Doctors
+## SehatAI — ABHA-Integrated Clinical Decision Support for PHC Doctors
 
 **Author:** Seikh Imran Ul Minhaj  
 **Status:** v2.0 — Unified (Chart Review + Symptom Triage)  
