@@ -18,6 +18,15 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 import uvicorn
 
+# Phase 2 imports
+from engine.models import (
+    SymptomIntake, TriageContext, ABHAConsent, ConsentStatus,
+    ConsentRequest, ConsentCallback, Symptom, Vitals, SymptomSeverity,
+    validate_abha_id, PHC_SYMPTOM_LIST
+)
+from engine.abha_mock import get_mock_abdm_service
+from engine.merge import get_context_merger
+
 # Import our engine modules
 import sys
 
@@ -104,6 +113,76 @@ class SummarizeResponse(BaseModel):
 class BatchEvaluationRequest(BaseModel):
     archetype: Optional[str] = None
     limit: int = 50
+
+
+# ──────────────────────────────────────────────
+# Phase 2: ABHA Integration & Symptom Intake Models
+# ──────────────────────────────────────────────
+
+class ABHAIdRequest(BaseModel):
+    abha_id: str = Field(..., pattern=r"^\d{14}$", description="14-digit ABHA ID")
+
+
+class ConsentRequest(BaseModel):
+    abha_id: str = Field(..., pattern=r"^\d{14}$")
+    purpose: str = "TRIAGE"
+    hi_types: List[str] = Field(default_factory=lambda: [
+        "Condition", "MedicationRequest", "Observation", 
+        "Encounter", "DiagnosticReport", "AllergyIntolerance"
+    ])
+    expiry_hours: int = Field(default=24, ge=1, le=168)
+    redirect_url: Optional[str] = None
+
+
+class SymptomEntry(BaseModel):
+    icd11_code: str = Field(..., pattern=r"^[A-Z]{2}\d{2}$")
+    display: str
+    duration_days: int = Field(..., ge=0, le=3650)
+    severity: str = Field(default="moderate", pattern="^(mild|moderate|severe)$")
+    onset_date: Optional[str] = None
+    notes: str = ""
+
+
+class VitalsInput(BaseModel):
+    bp_systolic: Optional[int] = Field(default=None, ge=40, le=300)
+    bp_diastolic: Optional[int] = Field(default=None, ge=20, le=200)
+    temperature: Optional[float] = Field(default=None, ge=30.0, le=45.0)
+    respiratory_rate: Optional[int] = Field(default=None, ge=0, le=100)
+    spo2: Optional[int] = Field(default=None, ge=0, le=100)
+    pulse: Optional[int] = Field(default=None, ge=0, le=300)
+    weight: Optional[float] = Field(default=None, ge=0.5, le=300.0)
+    height: Optional[float] = Field(default=None, ge=20.0, le=250.0)
+
+
+class SymptomIntakeRequest(BaseModel):
+    abha_id: Optional[str] = Field(default=None, pattern=r"^\d{14}$")
+    patient_name: Optional[str] = None
+    age: Optional[int] = Field(default=None, ge=0, le=150)
+    gender: Optional[str] = Field(default=None, pattern="^[MFO]$")
+    symptoms: List[SymptomEntry] = Field(default_factory=list)
+    vitals: VitalsInput = Field(default_factory=VitalsInput)
+    free_text: str = ""
+
+
+class ConsentCallback(BaseModel):
+    consent_id: str
+    status: str
+    artefact: Optional[dict] = None
+    error: Optional[str] = None
+
+
+class TriageContextResponse(BaseModel):
+    intake_id: str
+    abha_id: Optional[str]
+    merged_conditions: List[Dict[str, Any]]
+    merged_medications: List[Dict[str, Any]]
+    merged_vitals: Dict[str, Any]
+    merged_lab_reports: List[Dict[str, Any]]
+    conflicts: List[Dict[str, Any]]
+    red_flags: List[Dict[str, Any]]
+    ready_for_triage: bool
+    has_block_conflicts: bool
+    has_warnings: bool
 
 
 # ──────────────────────────────────────────────
@@ -290,6 +369,159 @@ async def batch_evaluate(request: BatchEvaluationRequest, background_tasks: Back
         "pass_rate": passed / len(files) if files else 0,
         "results": results
     }
+
+
+# ──────────────────────────────────────────────
+# Phase 2: ABHA Mock + Symptom Intake + Triage
+# ──────────────────────────────────────────────
+
+from engine.models import (
+    SymptomIntake, TriageContext, ABHAConsent, ConsentStatus,
+    ConsentRequest, ConsentCallback, Symptom, Vitals, SymptomSeverity,
+    validate_abha_id, PHC_SYMPTOM_LIST
+)
+from engine.abha_mock import get_mock_abdm_service
+from engine.merge import get_context_merger
+from uuid import uuid4
+
+
+# Initialize Phase 2 services
+mock_abdm = get_mock_abdm_service()
+context_merger = get_context_merger()
+
+
+@app.get("/api/abha/patient/{abha_id}")
+async def lookup_abha_patient(abha_id: str):
+    """Lookup patient demographics by ABHA ID (mock)"""
+    if not validate_abha_id(abha_id):
+        raise HTTPException(status_code=400, detail="Invalid ABHA ID format (must be 14-digit numeric)")
+    
+    patient = await mock_abdm.lookup_patient(abha_id)
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    
+    return patient
+
+
+@app.post("/api/abha/consent/initiate")
+async def initiate_consent(request: ConsentRequest):
+    """Initiate ABHA consent flow (mock)"""
+    if not validate_abha_id(request.abha_id):
+        raise HTTPException(status_code=400, detail="Invalid ABHA ID format")
+    
+    consent = await mock_abdm.initiate_consent(request)
+    return consent
+
+
+@app.get("/api/abha/consent/callback")
+async def consent_callback(consent_id: str, status: str, artefact: Optional[str] = None, error: Optional[str] = None):
+    """Handle consent manager callback (mock)"""
+    try:
+        consent_status = ConsentStatus(status.upper())
+    except ValueError:
+        raise HTTPException(status_code=400, detail=f"Invalid status: {status}")
+    
+    artefact_dict = None
+    if artefact:
+        import json
+        try:
+            artefact_dict = json.loads(artefact)
+        except:
+            artefact_dict = {"raw": artefact}
+    
+    callback = ConsentCallbackRequest(
+        consent_id=consent_id,
+        status=consent_status,
+        artefact=artefact_dict,
+        error=None if status.upper() != "DENIED" else error
+    )
+    
+    result = await mock_abdm.handle_consent_callback(callback)
+    
+    return result
+
+
+@app.get("/api/abha/consent/status/{consent_id}")
+async def get_consent_status(consent_id: str):
+    """Get consent status"""
+    status = await mock_abdm.get_consent_status(consent_id)
+    if not status:
+        raise HTTPException(status_code=404, detail="Consent not found")
+    return status
+
+
+@app.post("/api/abha/history")
+async def pull_abha_history(request: ConsentRequest):
+    """Pull patient history via HIU (mock)"""
+    if not validate_abha_id(request.abha_id):
+        raise HTTPException(status_code=400, detail="Invalid ABHA ID")
+    
+    bundle = await mock_abdm.pull_history(request.abha_id, request.consent_id)
+    if not bundle:
+        raise HTTPException(status_code=403, detail="Consent not granted or expired")
+    
+    return bundle
+
+
+@app.post("/api/intake/submit")
+async def submit_intake(request: dict):
+    """Submit symptom intake from nurse/ASHA"""
+    intake = SymptomIntake(**request)
+    
+    # Generate intake_id if not present
+    if not intake.intake_id or not intake.intake_id.startswith("INTAKE-"):
+        intake.intake_id = f"INTAKE-{uuid4().hex[:12].upper()}"
+    
+    return {
+        "success": True,
+        "intake_id": intake.intake_id,
+        "message": "Intake submitted successfully"
+    }
+
+
+@app.post("/api/triage/context")
+async def get_triage_context(request: dict):
+    """Merge intake + ABHA history -> triage context"""
+    intake = SymptomIntake(**request.get("intake", {}))
+    abha_id = request.get("abha_id")
+    consent_id = request.get("consent_id")
+    
+    if not abha_id or not consent_id:
+        raise HTTPException(status_code=400, detail="abha_id and consent_id required")
+    
+    # Pull history
+    bundle = await mock_abdm.pull_history(abha_id, consent_id)
+    if not bundle:
+        raise HTTPException(status_code=403, detail="History pull failed")
+    
+    # Parse FHIR bundle
+    import io
+    import json
+    fhir_data = json.loads(json.dumps(bundle))
+    abha_context = parse_fhir_bundle(io.StringIO(json.dumps(bundle)))
+    
+    # Merge intake + history
+    context = context_merger.merge(SymptomIntake(**intake.dict()), abha_context)
+    
+    return {
+        "success": True,
+        "context": context,
+        "message": "Triage context ready"
+    }
+
+
+@app.get("/api/symptoms/list")
+async def list_symptoms():
+    """Get standard PHC symptom list for intake form"""
+    return {"symptoms": PHC_SYMPTOM_LIST}
+
+
+@app.get("/api/symptoms/archetype/{archetype}")
+async def get_archetype_symptoms(archetype: str):
+    """Get demo symptoms for an archetype (for testing)"""
+    from engine.models import get_archetype_symptoms
+    symptoms = get_archetype_symptoms(archetype)
+    return {"archetype": archetype, "symptoms": symptoms}
 
 
 @app.get("/api/archetypes")
