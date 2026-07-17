@@ -121,14 +121,17 @@ FEW_SHOT = [{
 # ──────────────────────────────────────────────
 
 class ClinicalSummarizer:
-    """Gemini-powered clinical summarizer."""
+    """Gemini-powered clinical summarizer with deterministic fallback."""
     
     def __init__(self, model: str = "gemini-1.5-flash", api_key: str | None = None):
         api_key = api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
-        if not api_key:
-            raise ValueError("GOOGLE_API_KEY or GEMINI_API_KEY environment variable required")
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(model)
+        self.model = None
+        if api_key and api_key != "fallback":
+            try:
+                genai.configure(api_key=api_key)
+                self.model = genai.GenerativeModel(model)
+            except Exception:
+                pass  # Will use fallback
     
     def _build_prompt(self, context: dict[str, Any]) -> str:
         """Build prompt with system, few-shot, and patient context."""
@@ -142,6 +145,9 @@ class ClinicalSummarizer:
     
     def summarize(self, context: dict[str, Any]) -> ClinicalSummary:
         """Generate structured clinical summary."""
+        if self.model is None:
+            return self._fallback_summary(context, "fallback mode")
+            
         prompt = self._build_prompt(context)
         
         response = self.model.generate_content(

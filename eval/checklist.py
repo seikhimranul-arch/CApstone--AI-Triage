@@ -33,7 +33,7 @@ CHECKLIST = [
     ),
     ChecklistCriterion(
         name="one_liner_scannable",
-        description="one_liner ≤160 chars, contains age, gender, top 2 problems, key red flag",
+        description="one_liner <=160 chars, contains age, gender, top 2 problems, key red flag",
     ),
     ChecklistCriterion(
         name="chronic_snapshot_accurate",
@@ -53,7 +53,7 @@ CHECKLIST = [
     ),
     ChecklistCriterion(
         name="clinical_tone_appropriate",
-        description="Language is clinical, concise, actionable — no conversational fluff",
+        description="Language is clinical, concise, actionable - no conversational fluff",
     ),
 ]
 
@@ -184,11 +184,11 @@ def print_evaluation(result: dict[str, Any], patient_id: str = ""):
     print(f"EVALUATION: {patient_id}")
     print(f"{'='*60}")
     print(f"Score: {result['score']}/10 ({result['passed']}/{result['total']} passed)")
-    print(f"PASS: {'✓' if result['pass'] else '✗'}")
+    print(f"PASS: {'YES' if result['pass'] else 'NO'}")
     print("-" * 60)
     for criterion in CHECKLIST:
         passed = result["details"].get(criterion.name, False)
-        status = "✓" if passed else "✗"
+        status = "PASS" if passed else "FAIL"
         print(f"  {status} {criterion.name}: {criterion.description}")
     print(f"{'='*60}\n")
 
