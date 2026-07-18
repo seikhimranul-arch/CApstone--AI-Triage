@@ -10,6 +10,7 @@ import asyncio
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from datetime import datetime
+from uuid import uuid4
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
@@ -26,6 +27,7 @@ from engine.models import (
 )
 from engine.abha_mock import get_mock_abdm_service
 from engine.merge import get_context_merger
+from engine.triage import get_differential_engine
 
 # Import our engine modules
 import sys
@@ -495,10 +497,14 @@ async def get_triage_context(request: dict):
         raise HTTPException(status_code=403, detail="History pull failed")
     
     # Parse FHIR bundle
-    import io
     import json
-    fhir_data = json.loads(json.dumps(bundle))
-    abha_context = parse_fhir_bundle(io.StringIO(json.dumps(bundle)))
+    import tempfile
+    import os
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump(bundle, f)
+        temp_path = f.name
+    abha_context = parse_fhir_bundle(temp_path)
+    os.unlink(temp_path)
     
     # Merge intake + history
     context = context_merger.merge(SymptomIntake(**intake.dict()), abha_context)
@@ -507,6 +513,52 @@ async def get_triage_context(request: dict):
         "success": True,
         "context": context,
         "message": "Triage context ready"
+    }
+
+
+@app.post("/api/triage/differential")
+async def generate_differential(request: dict):
+    """Generate differential diagnosis from triage context"""
+    intake = SymptomIntake(**request.get("intake", {}))
+    abha_id = request.get("abha_id")
+    consent_id = request.get("consent_id")
+    use_fallback = request.get("use_fallback", False)
+    
+    if not abha_id or not consent_id:
+        raise HTTPException(status_code=400, detail="abha_id and consent_id required")
+    
+    # Pull history
+    bundle = await mock_abdm.pull_history(abha_id, consent_id)
+    if not bundle:
+        raise HTTPException(status_code=403, detail="History pull failed")
+    
+    # Parse FHIR bundle
+    import json
+    import tempfile
+    import os
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump(bundle, f)
+        temp_path = f.name
+    abha_context = parse_fhir_bundle(temp_path)
+    os.unlink(temp_path)
+    
+    # Merge intake + history
+    triage_context = context_merger.merge(SymptomIntake(**intake.dict()), abha_context)
+    
+    # Generate differential
+    engine = get_differential_engine()
+    if use_fallback:
+        engine.model = None  # Force fallback
+    output = engine.generate(triage_context)
+    
+    return {
+        "success": True,
+        "differential": output.differential,
+        "red_flags": output.red_flags,
+        "suggested_actions": output.suggested_actions,
+        "clinical_summary": output.clinical_summary,
+        "block_reason": output.block_reason,
+        "model_used": output.model_used
     }
 
 
@@ -550,6 +602,108 @@ ARCHETYPE_DESCRIPTIONS = {
     "high_risk_anc": "High-risk antenatal care - Pregnancy complications",
     "faltering_growth": "Pediatric faltering growth - Malnutrition risk"
 }
+
+
+# ──────────────────────────────────────────────
+# Phase 4: Doctor Override & ABHA Write-Back
+# ──────────────────────────────────────────────
+
+from pydantic import BaseModel, Field
+from typing import List, Optional, Dict, Any
+from datetime import datetime
+from uuid import uuid4
+
+class OverrideLog(BaseModel):
+    """Doctor override action on differential diagnosis."""
+    override_id: str = Field(default_factory=lambda: f"OVRD-{uuid4().hex[:12].upper()}")
+    differential_id: str
+    original_rank: int
+    icd11_code: str
+    action: str  # "accept" | "reject" | "reorder" | "add"
+    doctor_reason: str = ""
+    timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
+class FinalizeRequest(BaseModel):
+    """Request to finalize triage for ABHA write-back."""
+    intake_id: str
+    patient_id: str
+    abha_id: str
+    consent_id: str
+    final_differential: List[Dict[str, Any]]
+    overrides: List[OverrideLog]
+    doctor_id: str = "MO-001"
+    doctor_notes: str = ""
+
+class ABHAWritebackRequest(BaseModel):
+    """Request to push clinical record to ABHA."""
+    abha_id: str
+    consent_id: str
+    composition: Dict[str, Any]
+    record_type: str = "TriageSummary"
+
+# In-memory stores
+override_logs: Dict[str, List[OverrideLog]] = {}
+finalized_triages: Dict[str, Dict] = {}
+
+@app.post("/api/triage/override")
+async def log_override(override: OverrideLog):
+    """Log a doctor's override action on a differential diagnosis."""
+    key = f"{override.differential_id}"
+    if key not in override_logs:
+        override_logs[key] = []
+    override_logs[key].append(override)
+    return {"success": True, "override_id": override.override_id}
+
+@app.get("/api/triage/overrides/{differential_id}")
+async def get_overrides(differential_id: str):
+    """Get all overrides for a differential diagnosis."""
+    return {"overrides": override_logs.get(differential_id, [])}
+
+@app.post("/api/triage/finalize")
+async def finalize_triage(request: FinalizeRequest):
+    """Finalize triage output with doctor overrides for ABHA write-back."""
+    finalized_id = f"FINAL-{uuid4().hex[:12].upper()}"
+    
+    # Build composition for ABHA
+    composition = {
+        "composition_id": finalized_id,
+        "patient_id": request.patient_id,
+        "abha_id": request.abha_id,
+        "intake_id": request.intake_id,
+        "consent_id": request.consent_id,
+        "doctor_id": request.doctor_id,
+        "doctor_notes": request.doctor_notes,
+        "final_differential": request.final_differential,
+        "overrides": [o.model_dump() for o in request.overrides],
+        "timestamp": datetime.utcnow().isoformat(),
+        "status": "ready_for_writeback"
+    }
+    
+    finalized_triages[finalized_id] = composition
+    
+    return {
+        "success": True,
+        "finalized_id": finalized_id,
+        "composition": composition,
+        "message": "Triage finalized. Ready for ABHA write-back."
+    }
+
+@app.post("/api/abha/writeback")
+async def abha_writeback(request: ABHAWritebackRequest):
+    """Push clinical record to ABHA via HIP (mock)."""
+    from engine.abha_mock import get_mock_abdm_service
+    
+    mock_abdm = get_mock_abdm_service()
+    result = await mock_abdm.push_record(request.abha_id, request.consent_id, request.composition)
+    
+    return result
+
+@app.get("/api/triage/finalized/{finalized_id}")
+async def get_finalized_triage(finalized_id: str):
+    """Get finalized triage by ID."""
+    if finalized_id not in finalized_triages:
+        raise HTTPException(status_code=404, detail="Finalized triage not found")
+    return finalized_triages[finalized_id]
 
 
 # ──────────────────────────────────────────────
