@@ -1,0 +1,253 @@
+{
+  "app": {
+    "title": "SehatAI - PHC AI ಟ್ರೈಜ್ ಅಸಿಸ್ಟೆಂಟ್",
+    "subtitle": "ಆಯುಷ್ಮಾನ್ ಭಾರತ್ ಡಿಜಿಟಲ್ ಹೆಲ್ತ್ ರೆಕಾರ್ಡ್ಸ್"
+  },
+  "header": {
+    "triage_button": "ಟ್ರೈಜ್",
+    "review_button": "ರಿವ್ಯೂ",
+    "demo_mode": "ಡೆಮೋ ಮೋಡ್",
+    "patients_count": "{{count}} ರೋಗಿಗಳು",
+    "gemini": "ಜೆಮಿನಿ 1.5 ಫ್ಲಾಷ್"
+  },
+  "home": {
+    "loading": "ರೋಗಿಗಳನ್ನು ಲೋಡ್ ಮಾಡುತ್ತಿದ್ದೇವೆ...",
+    "select_patient": "ಒಂದು ರೋಗಿ ಆರಿಸಿ",
+    "select_patient_desc": "ವೈಪುವ ಮೇನುವಲ್ಲಿರುವ ರೋಗಿ ಕಾರ್ಡುಗಳನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ AI-ಆಧಾರಿತ ಕ್ಲಿನಿಕ್ ಸಾರಾಂಶವನ್ನು ರೆಡ್ ಫ್ಲಾಗ್ ಅಲರ್ಟ್‌ಗಳೊಂದಿಗೆ, ಕ್ರೋನಿಕ್ ರೋಗ ಸ್ನಾಪ್‌ಶಾಟ್ಗಳೊಂದಿಗೆ,�ಷಧಿಗಳ ರಿವ್ಯೂೊಂದಿಗೆ ಜನರೇಟ್ ಮಾಡಿ.",
+    "stats": {
+      "patients": "ರೋಗಿಗಳು",
+      "archetypes": "ಆರ್ಕಿಟೈಪ್‌ಗಳು",
+      "avg_response": "ಸರಾಸರಿ ಪ್ರತಿಕ್ರಿಯೆ"
+    }
+  },
+  "triage": {
+    "title": "SehatAI ಟ್ರೈಜ್ ಅಸಿಸ್ಟೆಂಟ್",
+    "subtitle": "ಲಕ್ಷಣಗಳು ಇನ್‌ಟೇಕ್ → ABHA ಇತಿಹಾಸ → ಡಿಫರೆನ್ಶಿಯಲ್ ಡಯಾಗ್ನೋಸಿಸ್",
+    "phase_badge": "ಫೇಸ್ 3",
+    "icd11_coding": "ICD-11 ಲಕ್ಷಣ ಕೋಡಿಂಗ್",
+    "patient_selection": "ಟ್ರೈಜ್‌ಗೆ ರೋಗಿಯನ್ನು ಆರಿಸಿ",
+    "patient_selection_desc": "ಲಕ್ಷಣಗಳು ಇನ್‌ಟೇಕ್ ಮತ್ತು ಡಿಫರೆನ್ಶಿಯಲ್ ಡಯಾಗ್ನೋಸಿಸ್ ಜನರೇಶನ್ ಪ್ರಾರಂಭಿಸಲು ಸೈಡ್‌ಬಾರ್‌ನಿಂದ ರೋಗಿಯನ್ನು ಆರಿಸಿ.",
+    "stats": {
+      "patients": "ರೋಗಿಗಳು",
+      "archetypes": "ಆರ್ಕಿಟೈಪ್ಸ್",
+      "avg_response": "ಸರಾಸರಿ ಪ್ರತಿಕ್ರಿಯೆ"
+    },
+    "intake_form": {
+      "title": "ಲಕ್ಷಣಗಳು ಇನ್‌ಟೇಕ್: {{name}}",
+      "archetype_age_gender": "{{archetype}} • {{age}}{{gender}}",
+      "demographics": {
+        "age": "ವಯಸ್ಸು",
+        "age_placeholder": "ಉದಾ., 45",
+        "gender": "ಲಿಂಗ",
+        "gender_select": "ಆರಿಸಿ",
+        "gender_male": "ಪುರುಷ",
+        "gender_female": "ಮಹಿಳೆ",
+        "gender_other": "ಇತರೆ",
+        "abha_id": "ABHA ID",
+        "abha_id_placeholder": "14-ಅಂಕಿಯ ABHA ID",
+        "name": "ಹೆಸರು",
+        "name_placeholder": "ರೋಗಿ ಹೆಸರು"
+      },
+      "symptoms": {
+        "title": "ಲಕ್ಷಣಗಳು (ICD-11 ಕೋಡ್ ಮಾಡಿದವು)",
+        "search_placeholder": "ಲಕ್ಷಣಗಳನ್ನು ಹುಡುಕಿ...",
+        "no_symptoms": "ಯಾವುದೇ ಲಕ್ಷಣಗಳು ಸೇರುವುದಿಲ್ಲ. ಮೇಲೆ ICD-11 ಪಟ್ಟಿ నుండి ಹುಡುಕಿ ಆರಿಸಿ.",
+        "duration_days": "ಅವಧಿ (ದಿನಗಳು)",
+        "severity": "ತೀವ್ರತೆ",
+        "severity_mild": "ಮೃದುವಾಗಿ",
+        "severity_moderate": "ಮಧ್ಯಮ",
+        "severity_severe": "ತೀವ್ರ",
+        "onset_date": "ಪ್ರಾರಂಭ ದಿನಾಂಕ",
+        "notes": "ಗಮನಿಕೆಗಳು",
+        "notes_placeholder": "ঐಚ್ಛಿಕ",
+        "remove": " kaldիրಿ"
+      },
+      "vitals": {
+        "title": "ವೈಟಲ್ ಸೈನ್ಸ್",
+        "bp_systolic": "BP ಸಿಸ್ಟೋಲಿಕ್",
+        "bp_diastolic": "BP ಡಯಾಸ್ಟೋಲಿಕ್",
+        "temperature": "ತಾಪಮಾನ",
+        "spo2": "SpO2",
+        "pulse": "ನಾಡಿ",
+        "respiratory_rate": "ಶ್ವಾಸ ದರ",
+        "weight": "ತೂಕ",
+        "height": "ಎತ್ತರ",
+        "placeholders": {
+          "bp_sys": "mmHg",
+          "bp_dia": "mmHg",
+          "temp": "°C",
+          "spo2": "%",
+          "pulse": "bpm",
+          "rr": "/min",
+          "weight": "kg",
+          "height": "cm"
+        }
+      },
+      "clinical_notes": {
+        "label": "ಕ್ಲಿನಿಕಲ್ ವಿವರಗಳು",
+        "placeholder": "ಮುಕ್ತ ಪಠ್ಯ ಕ್ಲಿನಿಕಲ್ ವಿವರಗಳು..."
+      },
+      "submit": {
+        "generating": "ಡಿಫರೆನ್ಶಿಯಲ್ ಜನರೇಟ್ ಆಗುತ್ತಿದೆ...",
+        "generate": "ಡಿಫರೆನ್ಶಿಯಲ್ ಡಯಾಗ್ನೋಸಿಸ್ ಜನರೇಟ್ ಮಾಡಿ",
+        "disabled_no_symptoms": "ಕಮಲೇಕಲೂ ಒಂದು ಲಕ್ಷಣ ಸೇರಿಸಿ",
+        "disabled_no_abha": "ABHA ID ಅಗತ್ಯ"
+      }
+    },
+    "triage_panel": {
+      "title": "ಡಿಫರೆನ್ಶಿಯಲ್ ಡಯಾಗ್ನೋಸಿಸ್",
+      "subtitle": "ಇತಿಹಾಸ-ಅವಗಾಹನ DDx ಸಲಹೆಗಳೊಂದಿಗೆ",
+      "status": {
+        "all_blocks_acknowledged": "ಎಲ್ಲಾ ಬ್ಲಾಕ್‌ಗಳು ಅನುಮೋದಿಸಲಾಗಿದೆ",
+        "block_conflicts": "{{count}} ಬ್ಲಾಕ್ ವಿರೋಧಾಭಾಸ{{count, plural, one {} other {ಗಳು}}}"
+      },
+      "clinical_summary": "ಕ್ಲಿನಿಕಲ್ ಸಾರಾಂಶ",
+      "red_flags": "ರೆಡ್ ಫ್ಲಾಗ್ಸ್ ({{count}})",
+      "red_flag_types": {
+        "critical": "ಕ್ರಿಟಿಕಲ್",
+        "warning": "ಹೆಚ್ಚರಿಕೆ",
+        "info": "ಮಾಹಿತಿ"
+      },
+      "data_conflicts": "ಡೇಟಾ ವಿರೋಧಾಭಾಸಗಳು ({{count}})",
+      "differential_diagnosis": "ರ್ಯಾಂಕ್ ಮಾಡಲಾದ ಡಿಫರೆನ್ಶಿಯಲ್ ಡಯಾಗ್ನೋಸಿಸ್ ({{count}})",
+      "probability": {
+        "high": "ಹೆಚ್ಚು",
+        "moderate": "ಮಧ್ಯಮ",
+        "low": "ಕम"
+      },
+      "urgency": {
+        "emergent": "ಆತ್ಯಂತಿಕ",
+        "urgent": "ಅತ್ಯಾವಶ್ಯಕ",
+        "routine": "ನಿಯಮಿತ"
+      },
+      "supporting_evidence": "ಒತ್ತುبوطಲು ದೃಷ್ಟಾಂತಗಳು",
+      "contradicting_evidence": "ವಿರೋಧಿ ದೃಷ್ಟಾಂತಗಳು",
+      "suggested_actions": "ಸಲಹೆ diberikan ಕ್ರಿಯೆಗಳು ({{count}})",
+      "action_types": {
+        "test": "ಟೆಸ್ಟ್",
+        "question": "ಪ್ರಶ್ನೆ",
+        "referral": "ರಿಫರಲ್"
+      },
+      "action_priority": {
+        "high": "ಹೆಚ್ಚು",
+        "medium": "ಮಧ್ಯಮ",
+        "low": "ಕಮ"
+      },
+      "linked_ddx": "DDx ಗೆ ಲಿಂಕ್: {{codes}}",
+      "footer_actions": {
+        "export": "ಟ್ರೈಜ್ ನೋಟ್ ಸಿಗೋತು ಮಾಡಿ",
+        "review_meds": "ಔಷಧಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ",
+        "schedule_followup": "ಫಾಲೋ-ಅಪ್ ഷೆಡ್ಯೂಲ್ ಮಾಡಿ",
+        "finalize_abha": "ಅಂತಿಮ ರೂಪಲ್ಲಿಡಿ ABHA ಗೆ ಬರೆಯಿ"
+      }
+    }
+  },
+  "review": {
+    "title": "SehatAI ಕ್ಲಿನಿಕಲ್ ರಿವ್ಯೂ",
+    "subtitle": "ಡಾಕ್ಟರ್ ಓವರ್ರೈಡ್ → ABHA ರೈಟ್-ಬ್ಯಾಕ್",
+    "phase_badge": "ಫೇಸ್ 4",
+    "patient_selection": "ಕ್ಲಿನಿಕಲ್ ರಿವ್ಯೂಗೆ ರೋಗಿ ಆರಿಸಿ",
+    "patient_selection_desc": "ಟ್ರೈಜ್, ಡಿಫರೆನ್ಶಿಯಲ್ ಡಯಾಗ್ನೋಸಿಸ್ ರಿವ್ಯೂ ಮಾಡಲು ಮತ್ತು ABHA ರೈಟ್-ಬ್ಯಾಕ್‌ಗೆ ಚಕ्रीय ರೂಪ ಒದಗಿಸಲು ರೋಗಿಯನ್ನು ಆರಿಸಿ.",
+    "stats": {
+      "patients": "ರೋಗಿಗಳು",
+      "archetypes": "ಆರ್ಕಿಟೈಪ್ಸ್",
+      "avg_response": "ಸರಾಸರಿ ಪ್ರತಿಕ್ರಿಯೆ"
+    },
+    "preparing_review": "ಟ್ರೈಜ್ ರನ್ನಿಂಗ್ ಆಗುತ್ತಿದೆ ಮತ್ತು ರಿವ್ಯೂ ತಯಾರாகುತ್ತದೆ...",
+    "override_panel_title": "ಡಾಕ್ಟರ್ ರಿವ್ಯೂ ಮತ್ತು ಓವರ್‌ರೈಡ್",
+    "overrides_count": "{{count}} ಓವರ್‌ರೈಡ್{{count, plural, one {} other {ಗಳು}}}",
+    "finalize_button": "ಅಂತಿಮ ರೂಪ ಒದಗಿಸಿ ABHA ರೈಟ್-ಬ್ಯಾಕ್ ತಯಾರಿಸಿ",
+    "export_triage_note": "ಟ್ರೈಜ್ ನೋಟ್ ರಾಫು ಮಾಡಿ",
+    "acknowledged_critical": "ಕ್ರಿಟಿಕಲ್ ರೆಡ್ ಫ್ಲಾಗ್ಗಳು ಅನುಮೋದಿಸಲ್ಪಟ್ಟಿವೆ",
+    "block_conflicts_detected": "ಬ್ಲಾಕ್ ವಿರೋಧಾಭಾಸಗಳು ಪತ್ತೆಹಚ್ಚಲಾಗಿದೆ",
+    "accept_conflict": "ವಿರೋಧಾಭಾಸವನ್ನು ಅನುಮೋದಿಸಿ",
+    "all_blocks_acknowledged_banner": "ಎಲ್ಲಾ ಬ್ಲಾಕ್ ವಿರೋಧಾಭಾಸಗಳು ಅನುಮೋದಿಸಲಾಗಿದೆ",
+    "proceed_clinical_decision": "ಈಗ ನೀವು ಕ್ಲಿನಿಕಲ್ ನಿರ್ಧಾರಗಳನ್ನು ತೆಗೆದುಕೊಳ್ಳಬಹುದು."
+  },
+  "archetypes": {
+    "uncontrolled_dm": "ಸಂಕೀರ್ಣತೆಗಳೊಂದಿಗೆ ನಿಯಂತ್ರಣದ ಹೊರಬಂದ ಟೈಪ್ 2 ಮಧುಮೇಹ",
+    "missed_tb_fu": "ಮಿಸ್ಸ್ಡ್ TB ಫಾಲೋ-ಅಪ್ - ಚಿಕಿತ್ಸಾ ಅನುಸರಣೆ ರಿಸ್ಕ್",
+    "polypharmacy_elderly": "7+ ಔಷಧಿಗಳ ಮೇಲೆ ವೃದ್ಧ asesinado - ಇಂಟರಾಕ್ಷನ್ ರಿಸ್ಕ್",
+    "high_risk_anc": "ಹೈ-ರಿಸ್ಕ್ ANC - ಗರ್ಭಧಾರಣೆ ಸಂಕೀರ್ಣತೆಗಳು",
+    "faltering_growth": "ಬಾಲ ವೃದ್ಧಿ ವಿಕಳವ್ - ಕుపೋಷಣೆ ರಿಸ್ಕ್"
+  },
+  "symptoms": {
+    "categories": {
+      "General": "ಸಾಮಾನ್ಯ",
+      "Respiratory": "ಶ್ವಾಸಕೋಶ",
+      "GI": "GI",
+      "Cardio": "ಕಾರ್ಡಿಯೋ",
+      "Neuro": "ನರ್ವೋ",
+      "GU": "GU",
+      "Skin": "ಚರ್ಮ",
+      "OBGYN": "OBGYN",
+      "Peds": "ಪೀಡ್ಸ್"
+    }
+  },
+  "footer": {
+    "chart_review": "SehatAI • ABHA-ಲಿಂಕ್ಡ್ PHCಗಳಿಗೆ ಪ್ರೋಟೋಟೈಪ್",
+    "triage": "SehatAI ಟ್ರೈಜ್ • ಫೇಸ್ 3: ಡಿಫರೆನ್ಶಿಯಲ್ ಎಂಜಿನ್",
+    "review": "SehatAI ಕ್ಲಿನಿಕಲ್ ರಿವ್ಯೂ • ಫೇಸ್ 4: ಡಾಕ್ಟರ್ ಓವರ್‌ರೈಡ್ ಮತ್ತು ABHA ರೈಟ್-ಬ್ಯಾಕ್",
+    "karpathy": "ಕರ್ಪಥಿ ತತ್ತ್ವಗಳು + ಪೋನಿಟೈಲ್ ಫ್ರೇಮ್‌ವರ್ಕ್‌နೊಂದಿಗೆ ನಿರ್ಮಿಸಲಾಗಿದೆ",
+    "abha_integrated": "ABHA-ಇಂಟಿಗ್ರೇಟೆಡ್ • ICD-11 ಕೋಡ್ ಮಾಡಿದ • ಕಳಹಿ-ಅವಗಾಹಿತ"
+  },
+  "language": {
+    "english": "English",
+    "hindi": "हिन्दी",
+    "telugu": "తెలుగు",
+    "kannada": "ಕನ್ನಡ",
+    "select_language": "ಭಾಷೆ ಆರಿಸಿ"
+  },
+  "training": {
+    "mode": "ಪ್ರಶಿಕ್ಷಣ ಮೋಡ್",
+    "title": "ನರ್ಸ್/ಆಶಾ ಪ್ರಶಿಕ್ಷಣ",
+    "welcome": "SehatAI ಪ್ರಶಿಕ್ಷಣಕ್ಕೆ ಸ್ವಾಗತ",
+    "description": "ಲಕ್ಷಣಗಳು ಇನ್‌ಟೇಕ್ ಮತ್ತು ಕ್ಲಿನಿಕಲ್ ನಿರ್ಣಯ ಬೆಂಬಲಕ್ಕಾಗಿ AI ಟ್ರೈಜ್ ಅಸಿಸ್ಟೆಂಟ್ ಅನ್ನು ಹೇಗೆ ಬಳಸುವುದು ಅಂದರೆ ಓದಿ.",
+    "step_1": "ಹಂತ 1: ರೋಗಿ ಹುಡುಕಿ",
+    "step_1_desc": "14-ಅಂಕಿಯ ABHA ID ನಮೂದಿಸಿ ಅಥವಾ ಹೆಸರಿನೊಂದಿಗೆ ಹುಡುಕಿ",
+    "step_2": "ಹಂತ 2: ಅನುಮತಿ",
+    "step_2_desc": "ಇತಿಹಾಸ ಪ್ರವೇಶಕ್ಕಾಗಿ ABHA ಅನುಮತಿ ಪ್ರವಾಹವನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+    "step_3": "ಹಂತ 3: ಲಕ್ಷಣಗಳು ಇನ್‌ಟೇಕ್",
+    "step_3_desc": "ICD-11 ಚೆಕ್ಲಿಸ್ಟ್‌ನಿಂದ ಲಕ್ಷಣಗಳನ್ನು ಆರಿಸಿ, ವైಟಾಲ್ಸ್ ಮತ್ತು ಅವಧಿ ನಮೂದಿಸಿ",
+    "step_4": "ಹಂತ 4: ರಿವ್ಯೂ",
+    "step_4_desc": "ಡಿಫರೆನ್ಶಿಯಲ್ ಮುನ್ನ ವಿರೋಧಾಭಾಸಗಳೊಂದಿಗೆ ಜೋಡತ богದ ಸಂದರ್ಭವನ್ನು ರಿವ್ಯೂ ಮಾಡಿ",
+    "step_5": "ಹಂತ 5: ಡಿಫರೆನ್ಶಿಯಲ್",
+    "step_5_desc": "AI ಸಲಹೆಿಸಿದ ಕ್ರಿಯೆಗಳೊಂದಿಗೆ ರ್ಯಾಂಕ್ ಮಾಡಿದ ಡಿಫರೆನ್ಶಿಯಲ್ ಜನರೇಟ್ ಮಾಡುತ್ತದೆ",
+    "step_6": "ಹಂತ 6: ಡಾಕ್ಟರ್ ರಿವ್ಯೂ",
+    "step_6_desc": "ಡಾಕ್ಟರ್ ರಿವ್ಯೂ ಮಾಡುತ್ತಾರೆ, ಓವರ್‌ರೈಡ್ ಮಾಡುತ್ತಾರೆ, ಮತ್ತು ABHA ರೈಟ್-ಬ್ಯಾಕ್‌ಗೆ ಚಕ್ರೀಯ ರೂಪ ಒದಗಿಸುತ್ತಾರೆ",
+    "practice_mode": "ಅಭ್ಯಾಸ ಮೋಡ್",
+    "start_practice": "ಅಭ್ಯಾಸ ಸೆಷನ್ ಪ್ರಾರಂಭಿಸಿ",
+    "complete_training": "ಪ್ರಶಿಕ್ಷಣ ಪೂರ್ಣಗೊಳಿಸಿ"
+  },
+  "metrics": {
+    "dashboard": "ಮೆಟ್ರಿಕ್ಸ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    "daily_active_mos": "ದೈನಂದಿನಸಕ್ರಿಯ MOs",
+    "time_per_patient": "ಸರಾಸರಿ ಸಮಯ/ರೋಗಿ",
+    "eval_score": "ವ್ಯುಕ್ಯುವೇಶನ್ ಸ್ಕೋರ್ (ಲೈವ್)",
+    "red_flag_detection": "ರೆಡ್ ಫ್ಲಾಗ್ ಡಿಟೆಕ್ಷನ್ ರೇಟ್",
+    "patient_satisfaction": "ರೋಗಿ ಸಂತೋಷ",
+    "total_triages": "ಒಟ್ಟು ಟ್ರೈಜಿಗಳು",
+    "override_rate": "ಓವರ್‌ರೈಡ್ ರೇಟ್",
+    "writeback_success": "ರೈಟ್-ಬ್ಯಾಕ್ ವಿಜಯ ರೇಟ್"
+  },
+  "offline": {
+    "status_online": "ಆನ್‌ಲೈನ್",
+    "status_offline": "ಆಫ್‌ಲೈನ್",
+    "sync_pending": "{{count}} ಸಿಂಕ್ ಲಂಬಿದೆ",
+    "sync_completed": "ಸಿಂಕ್ ಪೂರ್ಣವಾಗಿದೆ",
+    "last_sync": "ಕಳೆದ ಸಿಂಕ್: {{time}}",
+    "sync_now": "ಈಗ ಸಿಂಕ್ ಮಾಡಿ",
+    "data_cached": "ಆಫ್‌ಲೈನ್ ಬಳಕೆಗಾಗಿ ಡೇಟಾ ಕ್ಯಾಶ್ ಮಾಡಲಾಗಿದೆ"
+  },
+  "errors": {
+    "network_error": "ನೆಟ್‌ವರ್ಕ್ ದೋಷ. ದಯವಿಟ್ಟು ಕನೆಕ್ಷನ್ ಪರಿಶೀಲಿಸಿ.",
+    "api_error": "API ದೋಷ: {{message}}",
+    "consent_failed": "ಅನುಮತಿ ಪ್ರವಾಹವು ವಿಫಲವಾಗಿದೆ",
+    "triage_failed": "ಟ್ರೈಜ್ ಜನರೇಶನ್ ವಿಫಲವಾಗಿದೆ",
+    "writeback_failed": "ABHA ರೈಟ್-ಬ್ಯಾಕ್ ವಿಫಲವಾಗಿದೆ",
+    "patient_not_found": "ರೋಗಿ ಆಯ್ಕೆಗೊಳ್ಳಲಾಗಲಿಲ್ಲ",
+    "invalid_abha_id": "ಅಕ್ರಮ ABHA ID ರೂಪಾಂತರ (14 ಅಂಕಗಳು ಇರಬೇಕು)",
+    "validation_error": "ದಯವಿಟ್ಟು ಅಗತ್ಯ ಫೀಲ್ಡ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಿ",
+    "unexpected_error": "ಅನಿರ್ವಚನೀಯ ದೋಷ ಬಂದಿದೆ"
+  }
+}

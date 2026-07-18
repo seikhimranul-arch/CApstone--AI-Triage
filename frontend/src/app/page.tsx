@@ -1,13 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PatientList } from "@/components/PatientList";
-import { ClinicalSummaryPanel } from "@/components/ClinicalSummaryPanel";
+import Link from "next/link";
+import { PatientList } from "../components/PatientList";
+import { ClinicalSummaryPanel } from "../components/ClinicalSummaryPanel";
+import { useI18n } from "../lib/i18n";
+import { LanguageSelector } from "../components/LanguageSelector";
 
 export interface PatientFile {
   filename: string;
   archetype: string;
   id: string;
+  age: number;
+  gender: string;
+  name: string;
 }
 
 export interface PatientSummary {
@@ -23,6 +29,7 @@ export interface PatientSummary {
 }
 
 export default function HomePage() {
+  const { t, locale } = useI18n();
   const [patients, setPatients] = useState<PatientFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
@@ -75,7 +82,7 @@ export default function HomePage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading patients...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t('home.loading')}</p>
         </div>
       </div>
     );
@@ -93,19 +100,26 @@ export default function HomePage() {
               </div>
               <div>
                 <h1 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  PHC AI Triage Assistant
+                  {t('app.title')}
                 </h1>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Ayushman Bharat Digital Health Records
+                  {t('app.subtitle')}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-500">
-              <span className="px-2 py-1 bg-green-100 text-green-700 rounded">Demo Mode</span>
+              <Link href="/triage" className="px-3 py-1.5 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors">
+                🔍 {t('header.triage_button')}
+              </Link>
+              <Link href="/review" className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">
+                ✍️ {t('header.review_button')}
+              </Link>
+              <span className="px-2 py-1 bg-green-100 text-green-700 rounded">{t('header.demo_mode')}</span>
               <span>•</span>
-              <span>{patients.length} Patients</span>
+              <span>{t('header.patients_count', { count: patients.length })}</span>
               <span>•</span>
-              <span>Gemini 1.5 Flash</span>
+              <span>{t('header.gemini')}</span>
+              <LanguageSelector className="ml-2" />
             </div>
           </div>
         </div>
@@ -133,8 +147,8 @@ export default function HomePage() {
             ) : selectedPatient && summaryLoading ? (
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
                 <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-600 border-t-transparent mx-auto mb-4"></div>
-                <p className="text-gray-500 dark:text-gray-400">Generating clinical summary...</p>
-                <p className="text-xs text-gray-400 mt-1">Analyzing FHIR records with AI</p>
+                <p className="text-gray-500 dark:text-gray-400">{t('home.generating_summary')}</p>
+                <p className="text-xs text-gray-400 mt-1">{t('home.analyzing_fhir')}</p>
               </div>
             ) : (
               <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 h-[600px] flex items-center justify-center">
@@ -143,23 +157,23 @@ export default function HomePage() {
                     <span className="text-3xl">📋</span>
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                    Select a Patient
+                    {t('home.select_patient')}
                   </h3>
                   <p className="text-gray-500 dark:text-gray-400">
-                    Click on a patient card to generate their AI-powered clinical summary with red flag alerts, chronic disease snapshots, and medication review.
+                    {t('home.select_patient_desc')}
                   </p>
                   <div className="mt-6 grid grid-cols-3 gap-4 text-center">
                     <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{patients.length}</div>
-                      <div className="text-xs text-gray-500">Patients</div>
+                      <div className="text-xs text-gray-500">{t('home.stats.patients')}</div>
                     </div>
                     <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       <div className="text-2xl font-bold text-green-600 dark:text-green-400">5</div>
-                      <div className="text-xs text-gray-500">Archetypes</div>
+                      <div className="text-xs text-gray-500">{t('home.stats.archetypes')}</div>
                     </div>
                     <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                       <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">~3s</div>
-                      <div className="text-xs text-gray-500">Avg Response</div>
+                      <div className="text-xs text-gray-500">{t('home.stats.avg_response')}</div>
                     </div>
                   </div>
                 </div>
@@ -172,8 +186,8 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-gray-200 dark:border-gray-700 mt-8 py-4">
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>SehatAI • Prototype for ABHA-linked PHCs</p>
-          <p className="mt-1">Built with Karpathy Principles + Ponytail Framework</p>
+          <p>{t('footer.chart_review')}</p>
+          <p className="mt-1">{t('footer.karpathy')}</p>
         </div>
       </footer>
     </div>

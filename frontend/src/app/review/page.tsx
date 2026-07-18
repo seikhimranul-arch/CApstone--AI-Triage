@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DifferentialReviewPanel } from "@/components/DifferentialReviewPanel";
-import { PatientFile } from "@/app/page";
+import { DifferentialReviewPanel } from "../../components/DifferentialReviewPanel";
+import { PatientList } from "../../components/PatientList";
+import { PatientFile } from "../../app/page";
+import { useI18n } from "../../lib/i18n";
+import { LanguageSelector } from "../../components/LanguageSelector";
 
 interface TriageDifferentialResponse {
   success: boolean;
@@ -59,6 +62,7 @@ interface OverrideLog {
 }
 
 export default function ReviewPage() {
+  const { t } = useI18n();
   const [patients, setPatients] = useState<PatientFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState<PatientFile | null>(null);
@@ -67,7 +71,6 @@ export default function ReviewPage() {
   const [triageConflicts, setTriageConflicts] = useState<Conflict[]>([]);
   const [reviewLoading, setReviewLoading] = useState(false);
 
-  // Fetch patients on mount
   useEffect(() => {
     fetch("/api/patients")
       .then((res) => res.json())
@@ -76,17 +79,15 @@ export default function ReviewPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handlePatientSelect = async (patient: PatientFile) => {
+  const handlePatientSelect = async (patientId: string) => {
+    const patient = patients.find(p => p.id === patientId);
+    if (!patient) return;
     setSelectedPatient(patient);
     setShowReview(true);
     
-    // First, we need to run the full triage flow to get differential
-    // This is a simplified version - in production, this would come from stored intake
-    // For demo, we'll trigger a mock intake and get differential
     try {
       setReviewLoading(true);
       
-      // Create mock intake based on archetype
       let intake: any = {
         abha_id: "",
         age: patient.age,
@@ -131,16 +132,42 @@ export default function ReviewPage() {
         ], vitals: { bp_systolic: 145, bp_diastolic: 88, temperature: 36.8, spo2: 96, pulse: 72 }};
       }
 
-      // Get consent and run triage
-      from engine.abha_mock import get_mock_abdm_service;
-      const abdm = get_mock_abdm_service();
-      const patients_list = abdm.get_patient_list();
-      const p = patients_list.find((p: any) => p.archetype === patient.archetype && p.age === patient.age);
+      // Use fetch to call backend mock service
+      const consentRes = await fetch("/api/abha/consent/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          abha_id: "",
+          purpose: "TRIAGE",
+          hi_types: ["Condition", "MedicationRequest", "Observation", "Encounter", "DiagnosticReport", "AllergyIntolerance"],
+          expiry_hours: 24
+        })
+      });
+      
+      // We need to find the patient's ABHA ID from the mock service
+      // For demo, we'll use a placeholder approach
+      const mockAbdmRes = await fetch("/api/patients");
+      const allPatients = await mockAbdmRes.json();
+      const p = allPatients.find((pt: any) => pt.archetype === patient.archetype && pt.age === patient.age);
+      
       if (p) {
-        intake.abha_id = p.abha_id;
-        const consent_req = { abha_id: p.abha_id, purpose: "TRIAGE", hi_types: ["Condition","MedicationRequest","Observation"], expiry_hours: 24 };
-        const consent = await abdm.initiate_consent(consent_req);
-        await abdm.handle_consent_callback({ consent_id: consent.consent_id, status: "GRANTED", artefact: { signed: true } });
+        intake.abha_id = p.abha_id || "";
+        
+        const consentReq = { 
+          abha_id: p.abha_id, 
+          purpose: "TRIAGE", 
+          hi_types: ["Condition","MedicationRequest","Observation"], 
+          expiry_hours: 24 
+        };
+        
+        const consentRes2 = await fetch("/api/abha/consent/initiate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(consentReq)
+        });
+        const consent = await consentRes2.json();
+        
+        await fetch(`/api/abha/consent/callback?consent_id=${consent.consent_id}&status=GRANTED&artefact=${encodeURIComponent(JSON.stringify({ signed: true }))}`);
         
         // Get triage differential
         const triageRes = await fetch("/api/triage/differential", {
@@ -179,26 +206,28 @@ export default function ReviewPage() {
     if (!selectedPatient || !triageResult) return;
     
     try {
-      // Get the patient's ABHA ID and consent
-      from engine.abha_mock import get_mock_abdm_service;
-      const abdm = get_mock_abdm_service();
-      const patients_list = abdm.get_patient_list();
-      const p = patients_list.find((pt: any) => pt.archetype === selectedPatient.archetype && pt.age === selectedPatient.age);
+      const mockAbdmRes = await fetch("/api/patients");
+      const allPatients = await mockAbdmRes.json();
+      const p = allPatients.find((pt: any) => pt.archetype === selectedPatient?.archetype && pt.age === selectedPatient?.age);
       
       if (!p) throw new Error("Patient not found");
       
-      // Re-run consent flow to get consent_id
-      const consent_req = { abha_id: p.abha_id, purpose: "TRIAGE", hi_types: ["Condition","MedicationRequest","Observation"], expiry_hours: 24 };
-      const consent = await abdm.initiate_consent(consent_req);
-      await abdm.handle_consent_callback({ consent_id: consent.consent_id, status: "GRANTED", artefact: { signed: true } });
+      const consentReq = { abha_id: p.abha_id, purpose: "TRIAGE", hi_types: ["Condition","MedicationRequest","Observation"], expiry_hours: 24 };
+      const consentRes = await fetch("/api/abha/consent/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(consentReq)
+      });
+      const consent = await consentRes.json();
       
-      // Finalize
+      await fetch(`/api/abha/consent/callback?consent_id=${consent.consent_id}&status=GRANTED&artefact=${encodeURIComponent(JSON.stringify({ signed: true }))}`);
+      
       const finalizeRes = await fetch("/api/triage/finalize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           intake_id: `INTAKE-${Date.now()}`,
-          patient_id: selectedPatient.id,
+          patient_id: selectedPatient?.id,
           abha_id: p.abha_id,
           consent_id: consent.consent_id,
           final_differential: finalDifferential,
@@ -211,7 +240,6 @@ export default function ReviewPage() {
       if (finalizeRes.ok) {
         const data = await finalizeRes.json();
         
-        // Now write back to ABHA
         const writebackRes = await fetch("/api/abha/writeback", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -225,9 +253,9 @@ export default function ReviewPage() {
         
         if (writebackRes.ok) {
           const wbData = await writebackRes.json();
-          alert(`Successfully written to ABHA! Record ID: ${wbData.record_id}`);
+          alert(`${t("abha.writeback_success")} ${wbData.record_id}`);
         } else {
-          alert("Finalized but ABHA write-back failed");
+          alert(t("abha.writeback_failed"));
         }
       } else {
         alert("Finalization failed");
@@ -250,7 +278,7 @@ export default function ReviewPage() {
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading patients...</p>
+          <p className="text-gray-600 dark:text-gray-400">{t("home.loading")}</p>
         </div>
       </div>
     );
@@ -264,16 +292,17 @@ export default function ReviewPage() {
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">✍️</div>
               <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">SehatAI Clinical Review</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Doctor Override → ABHA Write-Back</p>
+                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{t("review.title")}</h1>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{t("review.subtitle")}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-500">
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">Phase 4</span>
+              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">{t("review.phase_badge")}</span>
               <span>•</span>
-              <span>{patients.length} Patients</span>
+              <span>{t("header.patients_count", { count: patients.length })}</span>
               <span>•</span>
-              <span>Review & Finalize</span>
+              <span>{t("review.override")}</span>
+              <LanguageSelector className="ml-2" />
             </div>
           </div>
         </div>
@@ -299,8 +328,24 @@ export default function ReviewPage() {
                   <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                     <span className="text-3xl">✍️</span>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Select a Patient for Clinical Review</h3>
-                  <p className="text-gray-500 dark:text-gray-400">Choose a patient to run triage, review differential diagnosis, and finalize for ABHA write-back.</p>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                    {t("review.patient_selection")}
+                  </h3>
+                  <p className="text-gray-500 dark:text-gray-400">{t("review.patient_selection_desc")}</p>
+                  <div className="mt-6 grid grid-cols-3 gap-4 text-center">
+                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{patients.length}</div>
+                      <div className="text-xs text-gray-500">{t("review.stats.patients")}</div>
+                    </div>
+                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">5</div>
+                      <div className="text-xs text-gray-500">{t("review.stats.archetypes")}</div>
+                    </div>
+                    <div className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">~3s</div>
+                      <div className="text-xs text-gray-500">{t("review.stats.avg_response")}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -309,7 +354,7 @@ export default function ReviewPage() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 h-[600px] flex items-center justify-center">
             <div className="text-center p-8">
               <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-600 border-t-transparent mx-auto mb-4"></div>
-              <p className="text-gray-500 dark:text-gray-400">Running triage and preparing review...</p>
+              <p className="text-gray-500 dark:text-gray-400">{t("review.preparing_review")}</p>
             </div>
           </div>
         ) : (
@@ -318,7 +363,7 @@ export default function ReviewPage() {
               <div className="flex items-center gap-3">
                 <button onClick={handleCloseReview} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">←</button>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Clinical Review: {selectedPatient?.name || "Patient"}</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t("review.override_panel_title")}: {selectedPatient?.name || "Patient"}</h2>
                   <p className="text-sm text-gray-500 dark:text-gray-400">{selectedPatient?.archetype} • {selectedPatient?.age}{selectedPatient?.gender}</p>
                 </div>
               </div>
@@ -344,7 +389,7 @@ export default function ReviewPage() {
 
       <footer className="border-t border-gray-200 dark:border-gray-700 mt-8 py-4">
         <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>SehatAI Clinical Review • Phase 4: Doctor Override & ABHA Write-Back</p>
+          <p>{t("footer.review")}</p>
         </div>
       </footer>
     </div>

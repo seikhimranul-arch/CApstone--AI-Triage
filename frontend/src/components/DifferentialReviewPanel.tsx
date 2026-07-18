@@ -386,10 +386,10 @@ export function DifferentialReviewPanel({
                           {dx.urgency}
                         </span>
                         {overrides.some(o => o.icd11_code === dx.icd11_code && o.action === "accept") && (
-                          <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" title="Accepted" />
+                          <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
                         )}
                         {overrides.some(o => o.icd11_code === dx.icd11_code && o.action === "reject") && (
-                          <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" title="Rejected" />
+                          <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />
                         )}
                       </div>
                     </div>

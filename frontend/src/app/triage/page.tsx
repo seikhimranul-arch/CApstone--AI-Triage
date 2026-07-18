@@ -4,6 +4,8 @@ import { useState, useEffect, FormEvent } from "react";
 import { TriageDifferentialPanel } from "../../components/TriageDifferentialPanel";
 import { PatientList } from "../../components/PatientList";
 import { PatientFile } from "../../app/page";
+import { useI18n } from "../../lib/i18n";
+import { LanguageSelector } from "../../components/LanguageSelector";
 
 interface SymptomEntry {
   icd11_code: string;
@@ -103,6 +105,8 @@ export default function TriagePage() {
   const [availableSymptoms, setAvailableSymptoms] = useState<Array<{icd11: string; display: string; category: string}>>([]);
   const [showSymptomDropdown, setShowSymptomDropdown] = useState(false);
 
+  const { t, locale } = useI18n();
+
   useEffect(() => {
     fetch("/api/patients")
       .then((res) => res.json())
@@ -133,7 +137,9 @@ export default function TriagePage() {
     }
   }, [selectedPatient]);
 
-  const handlePatientSelect = (patient: PatientFile) => {
+  const handlePatientSelect = (patientId: string) => {
+    const patient = patients.find(p => p.id === patientId);
+    if (!patient) return;
     setSelectedPatient(patient);
     setShowTriage(true);
     setShowTriagePanel(false);
