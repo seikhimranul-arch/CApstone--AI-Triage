@@ -249,7 +249,14 @@
     "of": "ನ",
     "completed": "ಪೂರ್ಣ",
     "step": "ಹಂತ",
-    "training_step": "ಪ್ರಶಿಕ್ಷಣ ಹಂತ"
+    "training_step": "ಪ್ರಶಿಕ್ಷಣ ಹಂತ",
+    "guideline_ref": "ದೇಶಲೆಯಿನ್ ಸಂದರ್ಭ",
+    "guideline_abdm_abha": "ABDM ABHA ID ನಿರೂಪಣೆ / NHM PHC ಮಾರ್ಗದರ್ಶಿ",
+    "guideline_abdm_consent": "ABDM ಅನುಮತಿ ಕಲ المصنوعات v2.0 / DPDP ಆಕ್ಟ್ 2023",
+    "guideline_icd11_imnci": "ICD-11 / IMNCI / NHM PHC STG / RSSDI / NPCDCS",
+    "guideline_npcdcs_ntep": "NPCDCS / NTEP / ICMR STG / KDIGO",
+    "guideline_api_fogsi_iap": "API / ICMR STG / FOGSI / IAP / CSI / RSSDI",
+    "guideline_abdm_hip_fhir": "ABDH HIP ಪುಶ್ / FHIR R4 / DPDP acte 2023 / ಆಡಿಟ್ ಟ್ರೇಲ್"
   },
   "metrics": {
     "dashboard": "ಮೆಟ್ರಿಕ್ಸ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",

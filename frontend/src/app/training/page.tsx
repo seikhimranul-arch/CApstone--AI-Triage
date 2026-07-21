@@ -10,6 +10,7 @@ const TRAINING_STEPS = [
     titleKey: "training.step_1",
     descKey: "training.step_1_desc",
     icon: User,
+    guidelineRef: "training.guideline_abdm_abha",
     content: {
       videoUrl: "/training/step1-patient-lookup.mp4",
       practicePatient: { name: "Ravi Kumar", age: 57, gender: "M", abhaId: "12345678901234", archetype: "uncontrolled_dm" }
@@ -20,6 +21,7 @@ const TRAINING_STEPS = [
     titleKey: "training.step_2",
     descKey: "training.step_2_desc",
     icon: FileText,
+    guidelineRef: "training.guideline_abdm_consent",
     content: {
       videoUrl: "/training/step2-consent.mp4",
       practicePatient: { name: "Ravi Kumar", age: 57, gender: "M", abhaId: "12345678901234", archetype: "uncontrolled_dm" }
@@ -30,6 +32,7 @@ const TRAINING_STEPS = [
     titleKey: "training.step_3",
     descKey: "training.step_3_desc",
     icon: Stethoscope,
+    guidelineRef: "training.guideline_icd11_imnci",
     content: {
       videoUrl: "/training/step3-symptom-intake.mp4",
       practicePatient: { name: "Ravi Kumar", age: 57, gender: "M", abhaId: "12345678901234", archetype: "uncontrolled_dm" },
@@ -45,6 +48,7 @@ const TRAINING_STEPS = [
     titleKey: "training.step_4",
     descKey: "training.step_4_desc",
     icon: HelpCircle,
+    guidelineRef: "training.guideline_npcdcs_ntep",
     content: {
       videoUrl: "/training/step4-review.mp4"
     }
@@ -54,6 +58,7 @@ const TRAINING_STEPS = [
     titleKey: "training.step_5",
     descKey: "training.step_5_desc",
     icon: AlertTriangle,
+    guidelineRef: "training.guideline_api_fogsi_iap",
     content: {
       videoUrl: "/training/step5-differential.mp4"
     }
@@ -63,6 +68,7 @@ const TRAINING_STEPS = [
     titleKey: "training.step_6",
     descKey: "training.step_6_desc",
     icon: CheckCircle,
+    guidelineRef: "training.guideline_abdm_hip_fhir",
     content: {
       videoUrl: "/training/step6-finalize.mp4"
     }
@@ -200,6 +206,12 @@ function TrainingMode() {
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t(step.titleKey)}</h2>
                 <p className="text-gray-600 dark:text-gray-400 mt-1">{t(step.descKey)}</p>
+                {step.guidelineRef && (
+                  <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 flex items-center gap-1">
+                    <span className="font-medium">{t("training.guideline_ref")}:</span>
+                    <span>{t(step.guidelineRef)}</span>
+                  </p>
+                )}
               </div>
               {isStepCompleted && (
                 <button

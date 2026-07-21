@@ -248,7 +248,14 @@
     "of": "న",
     "completed": "పూర్తి",
     "step": "సోపాన",
-    "training_step": "ప్రశిక్షణ సోపాన"
+    "training_step": "ప్రశిక్షణ సోపాన",
+    "guideline_ref": "గైడ్డలైన్ సందర్భం",
+    "guideline_abdm_abha": "ABDM ABHA ID ստանդర్డ్స్ / NHM PHC గైడ్డలైన్స్",
+    "guideline_abdm_consent": "ABDM కాన్సెంట్ ఆర్టిఫాక్ట్ v2.0 / DPDP acto 2023",
+    "guideline_icd11_imnci": "ICD-11 / IMNCI / NHM PHC STG / RSSDI / NPCDCS",
+    "guideline_npcdcs_ntep": "NPCDCS / NTEP / ICMR STG / KDIGO",
+    "guideline_api_fogsi_iap": "API / ICMR STG / FOGSI / IAP / CSI / RSSDI",
+    "guideline_abdm_hip_fhir": "ABDM HIP పుష్ / FHIR R4 / DPDP act 2023 / ఆడిట్ ట్రైల్"
   },
   "metrics": {
     "dashboard": "మెట్రిక్స్ డాష్‌బోರ್ಡ్",
