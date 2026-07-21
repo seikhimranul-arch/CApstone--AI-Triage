@@ -12,6 +12,7 @@ eggs/
 .eggs/
 lib/
 lib64/
+!frontend/src/lib/
 parts/
 sdist/
 var/
@@ -47,8 +48,13 @@ Thumbs.db
 
 # Data
 data/patients/
-*.json
+data/synthetic/
 !data/generator.py
+
+# Keep frontend config files
+!frontend/package.json
+!frontend/package-lock.json
+!frontend/tsconfig.json
 
 # Logs
 *.log
