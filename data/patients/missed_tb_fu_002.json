@@ -1,0 +1,474 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "2804cea5-e590-4027-aa36-4893bb80d222",
+        "name": [
+          {
+            "family": "Singh",
+            "given": [
+              "Ravi"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "2006-07-23",
+        "identifier": [
+          {
+            "system": "https://abha.ndhm.gov.in",
+            "value": "ABHA-4301845863"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "f1264ddc-11fe-462e-b770-81eaa2a8a581",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "60963004",
+              "display": "Pulmonary tuberculosis"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "4da7c863-7d35-421c-b5db-9a44908e27c5",
+        "code": {
+          "coding": [
+            {
+              "code": "373430",
+              "display": "Isoniazid 300mg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "30e9048e-ed61-45cc-814c-cf7b5491f6a8",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/4da7c863-7d35-421c-b5db-9a44908e27c5"
+          }
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "dosageInstruction": [
+          {
+            "text": "300 mg OD"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "ad8b8c59-a186-4b49-8551-dac73d0eb3f6",
+        "code": {
+          "coding": [
+            {
+              "code": "435722",
+              "display": "Rifampicin 450mg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "746bcdb3-4e78-4cd8-b3f6-33656658b2ce",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/ad8b8c59-a186-4b49-8551-dac73d0eb3f6"
+          }
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "dosageInstruction": [
+          {
+            "text": "450 mg OD"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "62d7cba4-adc2-4d22-b6e7-4f1660ba4000",
+        "code": {
+          "coding": [
+            {
+              "code": "352286",
+              "display": "Pyrazinamide 1.5g"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "91f0150c-9f7c-4abd-87c3-3b85f5dcfa09",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/62d7cba4-adc2-4d22-b6e7-4f1660ba4000"
+          }
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "dosageInstruction": [
+          {
+            "text": "1500 mg OD"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "0a22a339-6d80-4ffa-b7e4-33b7321df859",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "29463-7",
+              "display": "weight"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-05-02T01:20:57.811036",
+        "valueQuantity": {
+          "value": 55.9,
+          "unit": "kg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "de2d876e-6b05-4f1f-b426-93f826aadab4",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "29463-7",
+              "display": "weight"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-02-05T01:20:57.811078",
+        "valueQuantity": {
+          "value": 47.5,
+          "unit": "kg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "eebad634-6e8d-42e0-b142-745c17fd5e21",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "29463-7",
+              "display": "weight"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-05-07T01:20:57.811114",
+        "valueQuantity": {
+          "value": 62.8,
+          "unit": "kg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "6d7cd1df-3803-40ac-afac-2203c6496ad7",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1742-6",
+              "display": "alt"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-06-23T01:20:57.811153",
+        "valueQuantity": {
+          "value": 40.4,
+          "unit": "U/L"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "bd588f5f-5b3d-445e-b1d0-4121cac37504",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1742-6",
+              "display": "alt"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-06-22T01:20:57.811216",
+        "valueQuantity": {
+          "value": 102.9,
+          "unit": "U/L"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "f1c4e185-776d-4be2-8655-1e8249557d75",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1742-6",
+              "display": "alt"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-06-23T01:20:57.811252",
+        "valueQuantity": {
+          "value": 64.0,
+          "unit": "U/L"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "bf26d0cd-3374-42a4-88de-7e110cea7d0b",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1920-8",
+              "display": "ast"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-01-28T01:20:57.811288",
+        "valueQuantity": {
+          "value": 87.4,
+          "unit": "U/L"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "2a4b7c81-84a3-4f68-b5f3-f20a97a9c58c",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1920-8",
+              "display": "ast"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-06-08T01:20:57.811319",
+        "valueQuantity": {
+          "value": 65.7,
+          "unit": "U/L"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "bdf7d829-bfca-4c9d-9851-7f3c6e75a4d3",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1920-8",
+              "display": "ast"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-01-22T01:20:57.811350",
+        "valueQuantity": {
+          "value": 57.3,
+          "unit": "U/L"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "ecd9eb8a-168f-45a3-9317-ea661dea0491",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1920-8",
+              "display": "ast"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-07-17T01:20:57.811381",
+        "valueQuantity": {
+          "value": 106.1,
+          "unit": "U/L"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "63345dc4-a05a-4b17-8327-0b6c6b03ebf1",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1920-8",
+              "display": "ast"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "effectiveDateTime": "2026-07-15T01:20:57.811410",
+        "valueQuantity": {
+          "value": 99.7,
+          "unit": "U/L"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "cc910b6b-28a2-4191-b8aa-fd4376f7f268",
+        "status": "finished",
+        "class": {
+          "code": "AMB",
+          "display": "Ambulatory"
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "period": {
+          "start": "2025-09-07T01:20:57.811440"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "5f2531ae-fa50-4b3e-83c3-f58342019307",
+        "status": "finished",
+        "class": {
+          "code": "AMB",
+          "display": "Ambulatory"
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "period": {
+          "start": "2025-10-09T01:20:57.811503"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "1adf54dc-6006-4def-a121-2a300c9a3751",
+        "status": "finished",
+        "class": {
+          "code": "AMB",
+          "display": "Ambulatory"
+        },
+        "subject": {
+          "reference": "Patient/2804cea5-e590-4027-aa36-4893bb80d222"
+        },
+        "period": {
+          "start": "2025-08-29T01:20:57.811530"
+        }
+      }
+    }
+  ]
+}

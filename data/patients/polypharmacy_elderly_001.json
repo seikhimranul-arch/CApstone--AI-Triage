@@ -1,0 +1,775 @@
+{
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Patient",
+        "id": "868a268f-7197-4393-94bd-828985ef29e3",
+        "name": [
+          {
+            "family": "Nair",
+            "given": [
+              "Prakash"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1942-08-08",
+        "identifier": [
+          {
+            "system": "https://abha.ndhm.gov.in",
+            "value": "ABHA-7345977552"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "bd29c68a-0b87-4914-9cc8-26c9e6f09767",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "38341003",
+              "display": "Hypertensive disorder"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "5c4cf0e3-4fa2-4988-9b63-7b93cc4f6f3e",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "44054006",
+              "display": "Type 2 diabetes mellitus"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Condition",
+        "id": "e0ecf89a-56fe-4d99-a876-97a38c294a2c",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "42343007",
+              "display": "Chronic kidney disease stage 3"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "7155f743-49b5-4491-8de8-f6dea8034c13",
+        "code": {
+          "coding": [
+            {
+              "code": "197361",
+              "display": "Amlodipine 5mg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "f9439e39-8a35-4b08-a0f8-0b57bba633bb",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/7155f743-49b5-4491-8de8-f6dea8034c13"
+          }
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "dosageInstruction": [
+          {
+            "text": "5 mg OD"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "17f3cbac-2228-4762-8ae6-3b6271b992bd",
+        "code": {
+          "coding": [
+            {
+              "code": "457391",
+              "display": "Telmisartan 40mg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "b75ff61e-cea1-498b-8f5f-c5482726b1b7",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/17f3cbac-2228-4762-8ae6-3b6271b992bd"
+          }
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "dosageInstruction": [
+          {
+            "text": "40 mg OD"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "890cbc6f-8f08-47f3-afad-e89293b59200",
+        "code": {
+          "coding": [
+            {
+              "code": "860975",
+              "display": "Metformin 500mg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "fb3d4bf6-a4d5-4d2d-bd94-8f50d43bc3ac",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/890cbc6f-8f08-47f3-afad-e89293b59200"
+          }
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "dosageInstruction": [
+          {
+            "text": "500 mg BD"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "068cbe76-673d-4f1f-af8f-0e7bcbb63d8b",
+        "code": {
+          "coding": [
+            {
+              "code": "379509",
+              "display": "Atorvastatin 20mg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "e0c6df4a-c2bb-4237-8a73-ddb0a5de4e83",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/068cbe76-673d-4f1f-af8f-0e7bcbb63d8b"
+          }
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "dosageInstruction": [
+          {
+            "text": "20 mg ON"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "182b23e6-3c49-485d-91ca-1173025ccf3b",
+        "code": {
+          "coding": [
+            {
+              "code": "457391",
+              "display": "Pantoprazole 40mg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "cc4fd2ac-8431-482d-bf19-249bae6cb076",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/182b23e6-3c49-485d-91ca-1173025ccf3b"
+          }
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "dosageInstruction": [
+          {
+            "text": "40 mg OD"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Medication",
+        "id": "c42b2129-d0c6-4c93-8c1d-b27c127f453c",
+        "code": {
+          "coding": [
+            {
+              "code": "300862",
+              "display": "Diclofenac 50mg"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "0757126d-2832-4d18-b7d7-c113a238f024",
+        "status": "active",
+        "intent": "order",
+        "medication": {
+          "reference": {
+            "reference": "Medication/c42b2129-d0c6-4c93-8c1d-b27c127f453c"
+          }
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "dosageInstruction": [
+          {
+            "text": "50 mg SOS"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "d1f79c6a-1894-41c3-9073-e25f73cf0429",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "bp_systolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-06-16T01:20:57.819842",
+        "valueQuantity": {
+          "value": 147.3,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "d624b6dd-3540-4a83-ae22-cfce0381cfb8",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "bp_systolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-06-07T01:20:57.819876",
+        "valueQuantity": {
+          "value": 154.2,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "bdd498fd-8b26-4d17-949c-6435b602f377",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "bp_systolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-04-24T01:20:57.819900",
+        "valueQuantity": {
+          "value": 148.9,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "837f3ba6-5c5a-4549-89b8-b7d5c93c7ba0",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "bp_systolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-02-02T01:20:57.819922",
+        "valueQuantity": {
+          "value": 146.9,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "0343db19-06a7-42a5-a57f-b59ef4db46e7",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "bp_diastolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-05-14T01:20:57.819947",
+        "valueQuantity": {
+          "value": 88.7,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "5885332b-968f-4a25-b836-1632200aefa4",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "bp_diastolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-02-23T01:20:57.819968",
+        "valueQuantity": {
+          "value": 82.7,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "eddea83e-098d-42bd-8573-38449b224e27",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "bp_diastolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-01-31T01:20:57.819991",
+        "valueQuantity": {
+          "value": 81.0,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c98d2864-38bd-4ddb-a8d5-5c32b03ff208",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "bp_diastolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-03-23T01:20:57.820012",
+        "valueQuantity": {
+          "value": 81.5,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "45986f4e-dcbb-4249-a4c2-5e70fa0f9798",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "bp_diastolic"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-05-20T01:20:57.820034",
+        "valueQuantity": {
+          "value": 81.7,
+          "unit": "mmHg"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "6885da9e-4bca-4eba-bc33-9943b2f8c69a",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "4548-4",
+              "display": "hba1c"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-02-21T01:20:57.820059",
+        "valueQuantity": {
+          "value": 8.1,
+          "unit": "%"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c57149f7-f4e4-40a0-81e0-9c6293693ec8",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "4548-4",
+              "display": "hba1c"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-04-04T01:20:57.820081",
+        "valueQuantity": {
+          "value": 8.3,
+          "unit": "%"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "dab35ffe-ba0a-4d4e-a421-2bf102950daa",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "4548-4",
+              "display": "hba1c"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-05-29T01:20:57.820103",
+        "valueQuantity": {
+          "value": 8.0,
+          "unit": "%"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "6d40b2e6-fff2-4adf-a2c7-edbddcc269b2",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "4548-4",
+              "display": "hba1c"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-05-04T01:20:57.820128",
+        "valueQuantity": {
+          "value": 8.2,
+          "unit": "%"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "fbc1d2ca-acba-4062-824f-4df5ba324498",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "4548-4",
+              "display": "hba1c"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-02-03T01:20:57.820161",
+        "valueQuantity": {
+          "value": 7.1,
+          "unit": "%"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "6e22d186-b194-47cb-960e-24057b2a7d69",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2160-0",
+              "display": "creatinine"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-04-20T01:20:57.820199",
+        "valueQuantity": {
+          "value": 2.0,
+          "unit": "mg/dL"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "4df6c81e-b1ea-4b7d-a0d3-6169bd11c4c3",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2160-0",
+              "display": "creatinine"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-06-24T01:20:57.820233",
+        "valueQuantity": {
+          "value": 1.7,
+          "unit": "mg/dL"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "a3b2e6ca-60b9-457c-b0b7-2208f1cb2730",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "2160-0",
+              "display": "creatinine"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "effectiveDateTime": "2026-07-18T01:20:57.820268",
+        "valueQuantity": {
+          "value": 1.7,
+          "unit": "mg/dL"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "6cc73abf-554e-4c57-8447-87cb6183e7f3",
+        "status": "finished",
+        "class": {
+          "code": "AMB",
+          "display": "Ambulatory"
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "period": {
+          "start": "2026-03-24T01:20:57.820304"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "9b921bc9-b3ab-4699-a1d6-4558b1aef3d8",
+        "status": "finished",
+        "class": {
+          "code": "AMB",
+          "display": "Ambulatory"
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "period": {
+          "start": "2025-12-31T01:20:57.820335"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "1f7e14d9-4404-4000-8e95-643c59a70ee5",
+        "status": "finished",
+        "class": {
+          "code": "AMB",
+          "display": "Ambulatory"
+        },
+        "subject": {
+          "reference": "Patient/868a268f-7197-4393-94bd-828985ef29e3"
+        },
+        "period": {
+          "start": "2025-11-23T01:20:57.820363"
+        }
+      }
+    }
+  ]
+}
