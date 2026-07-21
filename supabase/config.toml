@@ -1,0 +1,22 @@
+# Supabase Configuration
+project_id: "your-project-id"
+api_url: "https://your-project.supabase.co"
+anon_key: "your-anon-key"
+
+# Database
+database_url: "postgresql://postgres:[password]@db.your-project.supabase.co:5432/postgres"
+
+# Auth
+auth_site_url: "https://your-app.netlify.app"
+auth_redirect_urls:
+  - "https://your-app.netlify.app/auth/callback"
+  - "http://localhost:3000/auth/callback"
+
+# Realtime
+realtime_enabled: true
+
+# Storage
+storage_enabled: false
+
+# Edge Functions
+functions_enabled: true

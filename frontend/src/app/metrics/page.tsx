@@ -54,7 +54,7 @@ function SparklineChart({ data, color, height = 60 }: { data: { date: string; va
   
   const points = data.map((d, i) => {
     const x = (i / (data.length - 1)) * 100;
-    const y = 100 - ((d.value - min) / range) * 100;
+    const y = 100 - ((d.value - min) / (max - min || 1)) * 100;
     return `${x}% ${y}%`;
   }).join(", ");
 
@@ -90,6 +90,14 @@ interface PilotMetrics {
   activeMOsByDay: { date: string; value: number }[];
   avgTimeByDay: { date: string; value: number }[];
 }
+
+const archetypeLabels: Record<string, string> = {
+  uncontrolled_dm: "Uncontrolled DM",
+  missed_tb_fu: "Missed TB FU",
+  polypharmacy_elderly: "Polypharmacy Elderly",
+  high_risk_anc: "High-Risk ANC",
+  faltering_growth: "Faltering Growth"
+};
 
 function generateMockMetrics(timeRange: string) {
   const days = timeRange === "7d" ? 7 : timeRange === "30d" ? 30 : 90;
@@ -137,39 +145,22 @@ function generateMockMetrics(timeRange: string) {
     writebackSuccess: 99.2,
     patientSatisfaction: 4.3,
     triagesByArchetype: {
-      "uncontrolled_dm": 312,
-      "missed_tb_fu": 289,
-      "polypharmacy_elderly": 234,
-      "high_risk_anc": 215,
-      "faltering_growth": 197
+      uncontrolled_dm: 312,
+      missed_tb_fu: 289,
+      polypharmacy_elderly: 234,
+      high_risk_anc: 215,
+      faltering_growth: 197
     },
-    triagesByDay: triagesByDay,
-    activeMOsByDay: activeMOsByDay,
-    avgTimeByDay: avgTimeByDay
+    triagesByDay,
+    activeMOsByDay,
+    avgTimeByDay
   };
 }
 
 export default function MetricsDashboard() {
   const { t } = useI18n();
   const [timeRange, setTimeRange] = useState("7d");
-  const [metrics, setMetrics] = useState<{
-    dailyActiveMOs: number;
-    dailyActiveMOsChange: string;
-    avgTimePerPatient: number;
-    avgTimePerPatientChange: string;
-    evalScore: number;
-    evalScoreChange: string;
-    redFlagDetection: number;
-    redFlagDetectionChange: string;
-    totalTriages: number;
-    overrideRate: number;
-    writebackSuccess: number;
-    patientSatisfaction: number;
-    triagesByArchetype: Record<string, number>;
-    triagesByDay: { date: string; value: number }[];
-    activeMOsByDay: { date: string; value: number }[];
-    avgTimeByDay: { date: string; value: number }[];
-  } | null>(null);
+  const [metrics, setMetrics] = useState<PilotMetrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -181,17 +172,10 @@ export default function MetricsDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-600 border-t-transparent"></div>
-      </div>
+</div>
     );
   }
-
-const archetypeLabels = {
-    "uncontrolled_dm": "Uncontrolled DM",
-    "missed_tb_fu": "Missed TB FU",
-    "polypharmacy_elderly": "Polypharmacy Elderly",
-    "high_risk_anc": "High-Risk ANC",
-    "faltering_growth": "Faltering Growth"
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -287,7 +271,7 @@ const archetypeLabels = {
                 <div className="h-64">
                   <SparklineChart data={metrics.avgTimeByDay} color="#f59e0b" height={256} />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target: {'<'}2.5 min</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target: <2.5 min</p>
               </div>
 
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -299,8 +283,8 @@ const archetypeLabels = {
                       <div key={key} className="flex items-center gap-4">
                         <span className="w-40 text-sm text-gray-600 dark:text-gray-400">{key.replace("_", " ").toUpperCase()}</span>
                         <div className="flex-1 h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-purple-600 rounded-full transition-all duration-500" 
+                          <div
+                            className="h-full bg-purple-600 rounded-full transition-all duration-500"
                             style={{ width: `${((value / metrics.totalTriages) * 100)}%` }}
                           />
                         </div>
@@ -366,7 +350,7 @@ const archetypeLabels = {
                     <p className="text-xs text-gray-500 dark:text-gray-400">Uptime</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{'<'}100ms</p>
+                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{'<'}{'100ms'}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">API p95</p>
                   </div>
                   <div>
