@@ -2,6 +2,12 @@ export interface PatientFile {
   filename: string;
   archetype: string;
   id: string;
+  name?: string;
+  age?: number;
+  gender?: string;
+  abha_id?: string;
+  phone?: string;
+  address?: string;
 }
 
 export interface PatientSummary {
@@ -68,4 +74,26 @@ export interface OverrideLog {
   action: "accept" | "reject" | "reorder" | "add";
   doctor_reason: string;
   timestamp: string;
+}
+
+export interface AbhaProfile {
+  name: string;
+  age: number;
+  gender: string;
+  phone: string;
+  address: string;
+  blood_group?: string;
+  email?: string;
+}
+
+export interface LinkedRecord {
+  type: string;
+  date: string;
+  provider: string;
+  summary: string;
+}
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
 }

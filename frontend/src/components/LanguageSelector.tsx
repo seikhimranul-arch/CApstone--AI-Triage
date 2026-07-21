@@ -1,67 +1,59 @@
 "use client";
 
 import { useI18n } from "../lib/i18n";
-import { Globe, ChevronDown, Check } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 const LANGUAGES = [
-  { code: 'en', name: 'English', native: 'English', flag: '🇺🇸' },
-  { code: 'hi', name: 'Hindi', native: 'हिन्दी', flag: '🇮🇳' },
-  { code: 'te', name: 'Telugu', native: 'తెలుగు', flag: '🇮🇳' },
-  { code: 'kn', name: 'Kannada', native: 'ಕನ್ನಡ', flag: '🇮🇳' }
-] as const;
+  { code: 'en' as const, label: 'English' },
+  { code: 'hi' as const, label: 'हिन्दी' },
+  { code: 'te' as const, label: 'తెలుగు' },
+  { code: 'kn' as const, label: 'ಕನ್ನಡ' },
+];
 
-export function LanguageSelector({ className = '' }: { className?: string }) {
-  const { locale, setLocale, t } = useI18n();
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-
-  const currentLang = LANGUAGES.find(l => l.code === locale) || LANGUAGES[0];
+export function LanguageSelector({ collapsed = false }: { collapsed?: boolean }) {
+  const { locale, setLocale } = useI18n();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-          buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const current = LANGUAGES.find((l) => l.code === locale) || LANGUAGES[0];
+
   return (
-    <div className={`relative ${className}`}>
+    <div ref={ref} className="relative">
       <button
-        ref={buttonRef}
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-        aria-haspopup="listbox"
-        aria-expanded={isOpen}
-        aria-label={t('language.select_language')}
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+        title={collapsed ? "Language" : undefined}
       >
-        <span className="text-base">{currentLang.flag}</span>
-        <span className="hidden sm:inline">{currentLang.native}</span>
-        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+        </svg>
+        {!collapsed && <span>{current.label}</span>}
       </button>
 
-      {isOpen && (
-        <div
-          ref={dropdownRef}
-          className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg py-1 z-50 animate-in fade-in-0 zoom-in-95"
-          role="listbox"
-        >
+      {open && (
+        <div className="absolute bottom-full left-0 mb-2 w-40 rounded-xl border border-slate-200 bg-white py-1 shadow-xl z-50">
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
-              onClick={() => { setLocale(lang.code as 'en' | 'hi' | 'te' | 'kn'); setIsOpen(false); }}
-              className={`w-full px-3 py-2 text-left flex items-center gap-3 text-sm ${locale === lang.code ? 'bg-blue-50 dark:bg-blue-900/30' : 'hover:bg-gray-50 dark:hover:bg-gray-700'}`}
-              role="option"
-              aria-selected={locale === lang.code}
+              onClick={() => { setLocale(lang.code); setOpen(false); }}
+              className={`flex w-full items-center gap-3 px-3 py-2 text-sm transition-colors ${
+                locale === lang.code ? "bg-blue-50 font-medium text-[#2563EB]" : "text-slate-700 hover:bg-slate-50"
+              }`}
             >
-              <span className="text-base">{lang.flag}</span>
-              <span className="flex-1">{lang.native}</span>
-              {locale === lang.code && <Check className="w-4 h-4 text-blue-600 dark:text-blue-400" />}
+              {lang.label}
+              {locale === lang.code && (
+                <svg className="ml-auto h-4 w-4 text-[#2563EB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+              )}
             </button>
           ))}
         </div>
