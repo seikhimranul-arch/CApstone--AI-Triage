@@ -172,9 +172,8 @@ export default function MetricsDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-600 border-t-transparent"></div>
-</div>
+      </div>
     );
-  }
   }
 
   return (
@@ -271,7 +270,7 @@ export default function MetricsDashboard() {
                 <div className="h-64">
                   <SparklineChart data={metrics.avgTimeByDay} color="#f59e0b" height={256} />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target: <2.5 min</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Target: {'<'}2.5 min</p>
               </div>
 
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
@@ -420,8 +419,8 @@ export default function MetricsDashboard() {
               </div>
             </div>
           </>
-        </main>
-      </div>
+        )}
+      </main>
     </div>
   );
 }
