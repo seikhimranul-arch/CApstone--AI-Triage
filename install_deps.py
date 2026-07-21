@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 # Install dependencies
-deps = ["google-generativeai", "pydantic", "python-dotenv", "pytest", "ruff"]
+deps = ["fastapi", "uvicorn[standard]", "google-generativeai", "pydantic", "python-dotenv", "pytest", "ruff", "fhir.resources"]
 for dep in deps:
     print(f"Installing {dep}...")
     subprocess.check_call([sys.executable, "-m", "pip", "install", dep])

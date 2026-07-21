@@ -69,6 +69,30 @@ summarizer = ClinicalSummarizer(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else N
 PATIENTS_DIR = Path(__file__).parent / "data" / "patients"
 
 
+def ensure_demo_data():
+    """Auto-generate 15 synthetic patients if data directory is empty."""
+    if not PATIENTS_DIR.exists():
+        PATIENTS_DIR.mkdir(parents=True, exist_ok=True)
+
+    existing = list(PATIENTS_DIR.glob("*.json"))
+    if existing:
+        return
+
+    from data.generator import make_patient, ARCHETYPES
+    print("No patient data found. Generating 15 synthetic patients...")
+    count = 0
+    for i, arch_key in enumerate(ARCHETYPES.keys()):
+        for j in range(3):
+            bundle = make_patient(arch_key, count)
+            with open(PATIENTS_DIR / f"{arch_key}_{j:03d}.json", "w") as f:
+                json.dump(bundle, f, indent=2)
+            count += 1
+    print(f"Generated {count} patients in {PATIENTS_DIR}")
+
+
+ensure_demo_data()
+
+
 # ──────────────────────────────────────────────
 # Pydantic Models
 # ──────────────────────────────────────────────
@@ -77,6 +101,9 @@ class PatientFile(BaseModel):
     filename: str
     archetype: str
     id: str
+    age: int = 0
+    gender: str = "?"
+    name: str = "Unknown"
 
 
 class PatientSummary(BaseModel):
@@ -166,12 +193,6 @@ class SymptomIntakeRequest(BaseModel):
     free_text: str = ""
 
 
-class ConsentCallback(BaseModel):
-    consent_id: str
-    status: str
-    artefact: Optional[dict] = None
-    error: Optional[str] = None
-
 
 class TriageContextResponse(BaseModel):
     intake_id: str
@@ -191,22 +212,52 @@ class TriageContextResponse(BaseModel):
 # Helper Functions
 # ──────────────────────────────────────────────
 
-def get_patient_files(archetype: Optional[str] = None) -> List[PatientFile]:
-    """Get list of available patient files"""
+def _parse_patient_file(filepath: Path) -> PatientFile:
+    """Parse a FHIR bundle to extract patient metadata."""
+    try:
+        ctx = parse_fhir_bundle(str(filepath))
+        p = ctx.get("patient", {})
+        parts = filepath.stem.split("_")
+        archetype = parts[0] if len(parts) >= 2 else "unknown"
+        return PatientFile(
+            filename=filepath.name,
+            archetype=archetype,
+            id=filepath.stem,
+            age=p.get("age", 0),
+            gender=p.get("gender", "?"),
+            name=p.get("name", "Unknown")
+        )
+    except Exception:
+        parts = filepath.stem.split("_")
+        archetype = parts[0] if len(parts) >= 2 else "unknown"
+        return PatientFile(
+            filename=filepath.name,
+            archetype=archetype,
+            id=filepath.stem
+        )
+
+
+_patient_cache: List[PatientFile] = []
+_cache_loaded = False
+
+
+def _load_patient_cache() -> None:
+    """Load and cache all patient files."""
+    global _cache_loaded, _patient_cache
+    if _cache_loaded:
+        return
+    _cache_loaded = True
     if not PATIENTS_DIR.exists():
-        return []
-    
-    files = []
-    for f in PATIENTS_DIR.glob("*.json"):
-        if archetype and not f.name.startswith(archetype):
-            continue
-        parts = f.stem.split("_")
-        if len(parts) >= 2:
-            files.append(PatientFile(
-                filename=f.name,
-                archetype=parts[0],
-                id=f.stem
-            ))
+        return
+    _patient_cache = [_parse_patient_file(f) for f in PATIENTS_DIR.glob("*.json")]
+
+
+def get_patient_files(archetype: Optional[str] = None) -> List[PatientFile]:
+    """Get list of available synthetic patients"""
+    _load_patient_cache()
+    files = _patient_cache
+    if archetype:
+        files = [f for f in files if f.archetype == archetype]
     return files
 
 
@@ -418,11 +469,6 @@ async def initiate_consent(request: ConsentRequest):
 @app.get("/api/abha/consent/callback")
 async def consent_callback(consent_id: str, status: str, artefact: Optional[str] = None, error: Optional[str] = None):
     """Handle consent manager callback (mock)"""
-    try:
-        consent_status = ConsentStatus(status.upper())
-    except ValueError:
-        raise HTTPException(status_code=400, detail=f"Invalid status: {status}")
-    
     artefact_dict = None
     if artefact:
         import json
@@ -431,9 +477,14 @@ async def consent_callback(consent_id: str, status: str, artefact: Optional[str]
         except:
             artefact_dict = {"raw": artefact}
     
-    callback = ConsentCallbackRequest(
+    try:
+        callback_status = ConsentStatus(status.upper())
+    except ValueError:
+        raise HTTPException(status_code=400, detail=f"Invalid status: {status}")
+    
+    callback = ConsentCallback(
         consent_id=consent_id,
-        status=consent_status,
+        status=callback_status,
         artefact=artefact_dict,
         error=None if status.upper() != "DENIED" else error
     )
@@ -453,12 +504,16 @@ async def get_consent_status(consent_id: str):
 
 
 @app.post("/api/abha/history")
-async def pull_abha_history(request: ConsentRequest):
+async def pull_abha_history(request: dict):
     """Pull patient history via HIU (mock)"""
-    if not validate_abha_id(request.abha_id):
+    abha_id = request.get("abha_id")
+    consent_id = request.get("consent_id")
+    if not abha_id or not consent_id:
+        raise HTTPException(status_code=400, detail="abha_id and consent_id required")
+    if not validate_abha_id(abha_id):
         raise HTTPException(status_code=400, detail="Invalid ABHA ID")
     
-    bundle = await mock_abdm.pull_history(request.abha_id, request.consent_id)
+    bundle = await mock_abdm.pull_history(abha_id, consent_id)
     if not bundle:
         raise HTTPException(status_code=403, detail="Consent not granted or expired")
     
