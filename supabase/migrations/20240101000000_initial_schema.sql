@@ -112,18 +112,6 @@ CREATE TABLE clinical_summaries (
   eval_score DECIMAL(3,1),
   eval_details JSONB,
   created_at TIMESTAMPTZ DEFAULT NOW()
-};
-
--- Doctor Overrides
-CREATE TABLE doctor_overrides (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  triage_session_id UUID REFERENCES triage_sessions(id),
-  doctor_id UUID REFERENCES users(id),
-  action TEXT NOT NULL CHECK (action IN ('accept', 'reject', 'reorder', 'add')),
-  original_diagnosis JSONB,
-  modified_diagnosis JSONB,
-  reason TEXT,
-  acknowledged_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ABHA Writebacks
