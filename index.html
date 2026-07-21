@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seikh Imran — AI Product Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #F7F7F8;
+      --accent: #0066FF;
+      --accent-light: #E8F0FF;
+      --dark: #111111;
+      --gray: #6B6B76;
+      --light-gray: #E5E5EA;
+      --card-bg: #FFFFFF;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-pill: 50px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent); color: #fff; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── Floating Navbar ─── */
+    .navbar {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 1000;
+      display: flex; align-items: center; gap: 8px;
+      background: var(--card-bg);
+      border: 1px solid var(--light-gray);
+      border-radius: var(--radius-pill);
+      padding: 6px 6px 6px 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      transition: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .navbar .avatar-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 4px 12px 4px 4px; cursor: default;
+    }
+    .navbar .avatar-pill img,
+    .navbar .avatar-pill .av {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #0066FF, #00D4AA);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+      overflow: hidden;
+    }
+    .navbar .avatar-pill .name {
+      font-size: 13px; font-weight: 600; white-space: nowrap;
+    }
+    .navbar .divider {
+      width: 1px; height: 20px; background: var(--light-gray);
+    }
+    .navbar .dots-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: transparent; cursor: pointer; font-size: 16px;
+      color: var(--gray); display: flex; align-items: center; justify-content: center;
+      transition: 0.2s;
+    }
+    .navbar .dots-btn:hover { background: var(--bg); }
+    .navbar .nav-links {
+      display: flex; gap: 4px; max-width: 0; overflow: hidden;
+      opacity: 0; transition: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .navbar:hover .nav-links,
+    .navbar.expanded .nav-links {
+      max-width: 300px; opacity: 1;
+    }
+    .navbar .nav-links a {
+      padding: 8px 14px; border-radius: var(--radius-pill);
+      font-size: 12px; font-weight: 600; color: var(--gray);
+      transition: 0.2s; white-space: nowrap;
+    }
+    .navbar .nav-links a:hover { background: var(--bg); color: var(--dark); }
+    .navbar .nav-links a.active { background: var(--accent); color: #fff; }
+
+    /* ─── Hero ─── */
+    .hero {
+      padding: 140px 24px 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero-banner {
+      max-width: 1000px; margin: 0 auto;
+      background: linear-gradient(135deg, #0066FF 0%, #00B4D8 50%, #00D4AA 100%);
+      border-radius: 24px; padding: 60px 48px 0;
+      position: relative; min-height: 420px;
+      overflow: hidden;
+    }
+    .hero-banner::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    /* clouds */
+    .cloud {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      filter: blur(40px);
+    }
+    .cloud-1 { width: 200px; height: 80px; top: 40px; right: 60px; }
+    .cloud-2 { width: 150px; height: 60px; top: 80px; right: 200px; }
+    .cloud-3 { width: 180px; height: 70px; bottom: 40px; left: 40px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 16px; border-radius: var(--radius-pill);
+      font-size: 13px; font-weight: 600; color: #fff;
+      margin-bottom: 20px; position: relative; z-index: 1;
+      animation: fadeSlideUp 0.6s ease 0.1s both;
+    }
+    .hero-title {
+      font-size: clamp(36px, 6vw, 64px); font-weight: 800;
+      color: #fff; line-height: 1.05; letter-spacing: -2px;
+      position: relative; z-index: 1;
+      animation: fadeSlideUp 0.6s ease 0.2s both;
+    }
+    .hero-title span { color: rgba(255,255,255,0.6); font-weight: 500; font-size: 0.6em; display: block; letter-spacing: -1px; margin-top: 4px; }
+    .hero-pills {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px;
+      position: relative; z-index: 1;
+      animation: fadeSlideUp 0.6s ease 0.3s both;
+    }
+    .hero-pill {
+      padding: 6px 14px; border-radius: var(--radius-pill);
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 12px; font-weight: 500; color: #fff;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .hero-portrait {
+      position: absolute; bottom: 0; right: 40px;
+      width: 220px; height: 260px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,102,255,0.3) 100%);
+      border-radius: 16px 16px 0 0;
+      display: flex; align-items: flex-end; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-portrait .portrait-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 48px; font-weight: 800; color: rgba(255,255,255,0.2);
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Section ─── */
+    .section {
+      max-width: 1000px; margin: 0 auto; padding: 80px 24px;
+    }
+    .section-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 8px;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--gray);
+    }
+    .eyebrow .plus { color: var(--accent); font-size: 14px; }
+    .section-heading {
+      font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+      letter-spacing: -1.5px; line-height: 1.1;
+    }
+
+    /* ─── Project Cards ─── */
+    .projects-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-top: 32px;
+    }
+    .project-card {
+      border-radius: 20px; padding: 28px;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer; min-height: 320px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      text-decoration: none;
+    }
+    .project-card:hover { transform: scale(1.02); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+    .project-card .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .card-num {
+      font-size: 12px; font-weight: 700; padding: 4px 10px;
+      background: rgba(255,255,255,0.2); border-radius: var(--radius-pill);
+      color: #fff;
+    }
+    .card-year {
+      font-size: 11px; font-weight: 600; padding: 4px 10px;
+      background: rgba(255,255,255,0.15); border-radius: var(--radius-pill);
+      color: rgba(255,255,255,0.7);
+    }
+    .project-card .card-mid { margin: auto 0; }
+    .project-card h3 {
+      font-size: 22px; font-weight: 800; color: #fff;
+      letter-spacing: -0.5px; margin-bottom: 6px;
+    }
+    .project-card .card-desc {
+      font-size: 13px; color: rgba(255,255,255,0.75);
+      line-height: 1.6; max-width: 300px;
+    }
+    .project-card .card-bottom {
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .card-tag {
+      font-size: 10px; font-weight: 600; padding: 3px 10px;
+      background: rgba(255,255,255,0.15); border-radius: var(--radius-pill);
+      color: rgba(255,255,255,0.8);
+    }
+    .card-arrow {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.15); display: flex;
+      align-items: center; justify-content: center;
+      color: #fff; font-size: 14px; transition: 0.3s;
+    }
+    .project-card:hover .card-arrow { transform: rotate(-45deg); background: rgba(255,255,255,0.25); }
+    /* phone mockup */
+    .card-mockup {
+      position: absolute; right: 20px; bottom: 80px; width: 90px; height: 160px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; overflow: hidden;
+    }
+    .card-mockup .mockup-bar {
+      height: 16px; background: rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .card-mockup .mockup-content {
+      padding: 8px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .card-mockup .mockup-line {
+      height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1);
+    }
+    .card-mockup .mockup-line:nth-child(1) { width: 80%; }
+    .card-mockup .mockup-line:nth-child(2) { width: 60%; }
+    .card-mockup .mockup-line:nth-child(3) { width: 70%; }
+
+    .bg-blue { background: var(--accent); color: #fff; }
+    .bg-cyan { background: #00B4D8; color: #fff; }
+    .bg-teal { background: #00D4AA; color: #fff; }
+    .bg-purple { background: #7C3AED; color: #fff; }
+
+    /* ─── About & Experience ─── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px;
+      margin-top: 32px; align-items: start;
+    }
+    .about-image {
+      width: 100%; aspect-ratio: 3/4;
+      background: linear-gradient(135deg, #E8F0FF, #F0F0F5);
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      font-size: 64px; color: var(--light-gray);
+    }
+    .about-content p {
+      font-size: 14px; color: var(--gray); line-height: 1.8;
+      margin-bottom: 14px;
+    }
+    .about-content strong { color: var(--dark); }
+
+    .timeline { margin-top: 32px; }
+    .timeline-item {
+      display: grid; grid-template-columns: 140px 1fr;
+      gap: 24px; padding: 20px 0;
+      border-bottom: 1px solid var(--light-gray);
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-date {
+      font-size: 12px; font-weight: 600; color: var(--accent);
+      background: var(--accent-light); padding: 6px 14px;
+      border-radius: var(--radius-pill); height: fit-content;
+      white-space: nowrap;
+    }
+    .timeline-content h4 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .timeline-content .company { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .timeline-content ul { padding-left: 16px; }
+    .timeline-content ul li { font-size: 13px; color: var(--gray); line-height: 1.7; margin-bottom: 2px; }
+
+    /* ─── Resume Section ─── */
+    .resume-header {
+      text-align: center; margin-bottom: 32px;
+    }
+    .resume-header h3 { font-size: 28px; font-weight: 800; letter-spacing: -1px; margin-bottom: 16px; }
+    .resume-sheet {
+      background: var(--card-bg); border: 1px solid var(--light-gray);
+      border-radius: 20px; padding: 40px; max-width: 700px; margin: 0 auto;
+    }
+    .resume-sheet .contact-pills {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .resume-sheet .contact-pill {
+      font-size: 12px; font-weight: 500; padding: 6px 14px;
+      border-radius: var(--radius-pill); border: 1px solid var(--light-gray);
+      display: flex; align-items: center; gap: 6px; color: var(--gray);
+    }
+    .resume-sheet .contact-pill i { color: var(--accent); font-size: 12px; }
+    .resume-sheet .exp-item {
+      padding: 14px 0; border-bottom: 1px solid var(--light-gray);
+    }
+    .resume-sheet .exp-item:last-child { border-bottom: none; }
+    .resume-sheet .exp-item h4 { font-size: 14px; font-weight: 700; }
+    .resume-sheet .exp-item .sub { font-size: 12px; color: var(--accent); font-weight: 600; }
+    .resume-sheet .exp-item .date { font-size: 11px; color: var(--gray); margin-bottom: 6px; }
+    .resume-sheet .exp-item ul { padding-left: 16px; }
+    .resume-sheet .exp-item li { font-size: 12px; color: var(--gray); line-height: 1.6; }
+
+    /* ─── Footer ─── */
+    .footer {
+      background: var(--accent); padding: 80px 24px 40px;
+      border-radius: 24px 24px 0 0; margin-top: 40px;
+    }
+    .footer-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
+    .footer h2 {
+      font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+      color: #fff; letter-spacing: -1.5px; margin-bottom: 24px;
+    }
+    .footer .email-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: var(--radius-pill);
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; font-size: 14px; font-weight: 600;
+      transition: 0.2s;
+    }
+    .footer .email-link:hover { background: rgba(255,255,255,0.25); }
+    .footer .socials {
+      display: flex; justify-content: center; gap: 12px; margin-top: 24px;
+    }
+    .footer .social-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); display: flex;
+      align-items: center; justify-content: center;
+      color: #fff; font-size: 18px; transition: 0.2s;
+    }
+    .footer .social-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+    .footer .bottom {
+      margin-top: 40px; padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; color: rgba(255,255,255,0.5);
+    }
+    .footer .back-top {
+      background: none; border: none; color: rgba(255,255,255,0.5);
+      font-size: 12px; cursor: pointer; transition: 0.2s;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .footer .back-top:hover { color: #fff; }
+
+    /* ─── Scroll Reveal ─── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 768px) {
+      .navbar { top: 12px; padding: 4px 4px 4px 6px; }
+      .navbar .avatar-pill .name { display: none; }
+      .hero-banner { padding: 40px 24px 0; min-height: 360px; }
+      .hero-portrait { width: 140px; height: 180px; right: 16px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 24px; }
+      .timeline-item { grid-template-columns: 1fr; gap: 8px; }
+      .section { padding: 60px 20px; }
+      .resume-sheet { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Floating Navbar ─── -->
+  <nav class="navbar" id="navbar">
+    <div class="avatar-pill">
+      <div class="av">SI</div>
+      <span class="name">Seikh Imran</span>
+    </div>
+    <div class="divider"></div>
+    <div class="nav-links">
+      <a href="#work" class="active">Work</a>
+      <a href="#about">About</a>
+      <a href="#resume">Resume</a>
+    </div>
+    <button class="dots-btn" id="dotsBtn"><i class="fas fa-ellipsis"></i></button>
+  </nav>
+
+  <!-- ─── Hero ─── -->
+  <section class="hero">
+    <div class="hero-banner">
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+
+      <div class="hero-badge"><i class="fas fa-sparkles"></i> Hey, I'm Seikh Imran</div>
+      <h1 class="hero-title">
+        AI Product<br>Manager
+        <span>+ HCM Implementation Specialist</span>
+      </h1>
+      <div class="hero-pills">
+        <span class="hero-pill"><i class="fas fa-location-dot"></i> Hyderabad, India</span>
+        <span class="hero-pill"><i class="fas fa-briefcase"></i> 2+ Years at ADP</span>
+        <span class="hero-pill"><i class="fas fa-robot"></i> 2 Live AI MVPs</span>
+      </div>
+      <div class="hero-portrait">
+        <div class="portrait-placeholder">SI</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Selected Work ─── -->
+  <section class="section" id="work">
+    <div class="reveal">
+      <div class="section-header">
+        <span class="eyebrow"><span class="plus">+</span> SELECTED WORK</span>
+      </div>
+      <h2 class="section-heading">check out some of my work</h2>
+
+      <div class="projects-grid">
+        <a href="https://fintlerai.netlify.app" target="_blank" class="project-card bg-blue reveal">
+          <div class="card-top"><span class="card-num">01</span><span class="card-year">2025</span></div>
+          <div class="card-mid">
+            <h3>FintLer</h3>
+            <p class="card-desc">AI Financial Clarity Engine reading bank emails to generate behavioral insights for Indian millennials.</p>
+          </div>
+          <div class="card-bottom">
+            <div class="card-tags"><span class="card-tag">AI/ML</span><span class="card-tag">Gemini API</span><span class="card-tag">React</span></div>
+            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+          </div>
+          <div class="card-mockup"><div class="mockup-bar"></div><div class="mockup-content"><div class="mockup-line"></div><div class="mockup-line"></div><div class="mockup-line"></div></div></div>
+        </a>
+
+        <a href="https://intetio.netlify.app" target="_blank" class="project-card bg-cyan reveal">
+          <div class="card-top"><span class="card-num">02</span><span class="card-year">2025</span></div>
+          <div class="card-mid">
+            <h3>Intentio Stylist AI</h3>
+            <p class="card-desc">Context-aware fashion assistant returning aesthetic rationale explaining why pieces work together.</p>
+          </div>
+          <div class="card-bottom">
+            <div class="card-tags"><span class="card-tag">React 19</span><span class="card-tag">Vite</span><span class="card-tag">TanStack</span></div>
+            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+          </div>
+          <div class="card-mockup"><div class="mockup-bar"></div><div class="mockup-content"><div class="mockup-line"></div><div class="mockup-line"></div><div class="mockup-line"></div></div></div>
+        </a>
+
+        <div class="project-card bg-teal reveal">
+          <div class="card-top"><span class="card-num">03</span><span class="card-year">2025</span></div>
+          <div class="card-mid">
+            <h3>PayAI</h3>
+            <p class="card-desc">Enterprise validation engine for payroll vendors. Automating data checking for implementation teams.</p>
+          </div>
+          <div class="card-bottom">
+            <div class="card-tags"><span class="card-tag">B2B</span><span class="card-tag">Payroll</span><span class="card-tag">Prompt Engineering</span></div>
+            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+          </div>
+        </div>
+
+        <div class="project-card bg-purple reveal">
+          <div class="card-top"><span class="card-num">04</span><span class="card-year">2025</span></div>
+          <div class="card-mid">
+            <h3>Lumenci AI</h3>
+            <p class="card-desc">Patent claim chart assistant. Early concept that honed B2B monetization and advanced prompt engineering.</p>
+          </div>
+          <div class="card-bottom">
+            <div class="card-tags"><span class="card-tag">Legal Tech</span><span class="card-tag">Document AI</span><span class="card-tag">LLM</span></div>
+            <div class="card-arrow"><i class="fas fa-arrow-right"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── About Me ─── -->
+  <section class="section" id="about">
+    <div class="reveal">
+      <div class="section-header"><span class="eyebrow"><span class="plus">+</span> ABOUT ME</span></div>
+      <h2 class="section-heading">a little about myself</h2>
+
+      <div class="about-grid">
+        <div class="about-image"><i class="fas fa-user"></i></div>
+        <div class="about-content">
+          <p>
+            AI Product Manager &amp; HCM Implementation Specialist with 2+ years at ADP — one of the world's
+            largest payroll platforms. I sit at a rare intersection: <strong>deep domain knowledge of complex
+            enterprise HCM implementations</strong> combined with <strong>hands-on, full-stack experience
+            building and deploying live AI-native products</strong>.
+          </p>
+          <p>
+            I designed, built, and shipped <strong>FintLer</strong> (AI financial clarity engine) and
+            <strong>Intentio Stylist AI</strong> (context-aware fashion assistant) — live MVPs demonstrating
+            0-to-1 product execution, behavioral psychology in UX, and ephemeral data architectures.
+          </p>
+          <p>
+            Previously: HCM implementations across <strong>UK, Ireland, and Australia markets</strong>.
+            I know where payroll systems fail, what clients actually need vs. what they ask for, and how to
+            translate that into products that ship.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Experience ─── -->
+  <section class="section">
+    <div class="reveal">
+      <div class="section-header"><span class="eyebrow"><span class="plus">+</span> EXPERIENCE</span></div>
+      <h2 class="section-heading">the journey so far</h2>
+
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-date">Apr 26 – Present</div>
+          <div class="timeline-content">
+            <h4>Associate Functional Consultant</h4>
+            <div class="company">ADP — UK Implementation</div>
+            <ul>
+              <li>Leading UK HCM implementations — end-to-end client onboarding, configuration, and go-live</li>
+              <li>Driving requirements gathering and solution design for UK payroll and HR compliance</li>
+              <li>Using JIRA, Monday.com, and Siebel to track delivery milestones and cross-team dependencies</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-date">Sep 25 – Apr 26</div>
+          <div class="timeline-content">
+            <h4>Lifion Developer IC</h4>
+            <div class="company">ADP — AU Pilot Program</div>
+            <ul>
+              <li>Piloted HCM integration projects for Australia (payroll law, superannuation, STP)</li>
+              <li>Worked on Siebel CRM for enterprise integrations and legacy-to-SaaS migration patterns</li>
+              <li>Pilot concluded successfully — led directly to UK Implementation assignment</li>
+            </ul>
+          </div>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-date">Jul 24 – Sep 25</div>
+          <div class="timeline-content">
+            <h4>Associate Implementation Consultant</h4>
+            <div class="company">ADP — UK &amp; Ireland</div>
+            <ul>
+              <li>Implemented 7 clients via fast-track delivery with higher-than-average NPS scores</li>
+              <li>Translated business requirements into product configurations, workflows, and system rules</li>
+              <li>Automated internal processes using n8n to reduce manual effort and accelerate delivery</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Resume ─── -->
+  <section class="section" id="resume">
+    <div class="reveal">
+      <div class="resume-header">
+        <h3>oh sure, let's keep it formal</h3>
+        <a href="#" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;padding:12px 24px;border-radius:50px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:0.2s;">
+          <i class="fas fa-download"></i> Download PDF
+        </a>
+      </div>
+      <div class="resume-sheet">
+        <div class="contact-pills">
+          <span class="contact-pill"><i class="fas fa-envelope"></i> seikhimranulminhaj@gmail.com</span>
+          <span class="contact-pill"><i class="fas fa-phone"></i> +91-7008044210</span>
+          <span class="contact-pill"><i class="fab fa-linkedin"></i> /in/seikh-imran</span>
+          <span class="contact-pill"><i class="fas fa-globe"></i> seikhimranul-arch.github.io</span>
+        </div>
+
+        <div class="exp-item">
+          <h4>Associate Functional Consultant</h4>
+          <div class="sub">ADP — UK Implementation</div>
+          <div class="date">Apr 2026 — Present · Hyderabad, India</div>
+          <ul>
+            <li>Leading UK HCM implementations — end-to-end client onboarding, configuration, and go-live</li>
+            <li>Driving requirements gathering and solution design for UK payroll and HR compliance</li>
+          </ul>
+        </div>
+        <div class="exp-item">
+          <h4>Lifion Developer IC</h4>
+          <div class="sub">ADP — AU Pilot Program</div>
+          <div class="date">Sep 2025 — Apr 2026 · Hyderabad, India</div>
+          <ul>
+            <li>Piloted HCM integration projects for Australia market</li>
+            <li>Pilot concluded successfully — led to UK Implementation assignment</li>
+          </ul>
+        </div>
+        <div class="exp-item">
+          <h4>Associate Implementation Consultant</h4>
+          <div class="sub">ADP — UK &amp; Ireland</div>
+          <div class="date">Jul 2024 — Sep 2025 · Hyderabad, India</div>
+          <ul>
+            <li>Implemented 7 clients via fast-track delivery with high NPS scores</li>
+            <li>Automated internal processes using n8n to reduce manual effort</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <div class="footer">
+    <div class="footer-inner">
+      <h2>Let's create incredible<br>work together.</h2>
+      <a href="mailto:seikhimranulminhaj@gmail.com" class="email-link">
+        <i class="fas fa-envelope"></i> seikhimranulminhaj@gmail.com
+      </a>
+      <div class="socials">
+        <a href="https://linkedin.com/in/seikh-imran" target="_blank" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://seikhimranul-arch.github.io" target="_blank" class="social-btn"><i class="fas fa-globe"></i></a>
+        <a href="https://github.com/seikhimranul-arch" target="_blank" class="social-btn"><i class="fab fa-github"></i></a>
+        <a href="https://fintlerai.netlify.app" target="_blank" class="social-btn"><i class="fas fa-coins"></i></a>
+        <a href="https://intetio.netlify.app" target="_blank" class="social-btn"><i class="fas fa-tshirt"></i></a>
+      </div>
+      <div class="bottom">
+        <span>&copy; 2026 Seikh Imran Ul Minhaj</span>
+        <button class="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i> Back to top</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Navbar expand
+    const navbar = document.getElementById('navbar');
+    const dotsBtn = document.getElementById('dotsBtn');
+    dotsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navbar.classList.toggle('expanded');
+    });
+    document.addEventListener('click', () => navbar.classList.remove('expanded'));
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('.section, .hero');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) current = s.getAttribute('id'); });
+      navLinks.forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+      });
+    });
+
+    // Scroll reveal
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(e => obs.observe(e));
+
+    // Stagger reveal for timeline
+    document.querySelectorAll('.timeline-item').forEach((item, i) => {
+      item.style.transitionDelay = (i * 0.1) + 's';
+    });
+  </script>
+</body>
+</html>
