@@ -13,7 +13,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://your-api.railway.app/api/:splat"
+  to = "https://capstone-ai-triage.onrender.com/api/:splat"
   status = 200
   force = true
 
