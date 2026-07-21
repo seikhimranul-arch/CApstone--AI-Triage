@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AppShell } from "../../components/AppShell";
 import { useI18n } from "../../lib/i18n";
 import { ChevronRight, CheckCircle, PlayCircle, PauseCircle, X, ArrowLeft, ArrowRight, HelpCircle, User, Stethoscope, FileText, Check, AlertTriangle } from "lucide-react";
 
@@ -105,47 +106,29 @@ function TrainingMode() {
   const isStepCompleted = completedSteps.has(currentStep);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <button onClick={() => window.location.href = "/"} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
-              </button>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{t("training.title")}</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{t("training.description")}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <span className="px-2 py-1 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 rounded">{t("training.mode")}</span>
-            </div>
+    <AppShell>
+      {/* Progress Bar */}
+      <div className="mx-auto max-w-4xl px-4 py-6 lg:px-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-slate-900">{t("training.title")}</h1>
+          <p className="text-sm text-slate-500">{t("training.description")}</p>
+        </div>
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-slate-700">
+              {t("training.step")} {currentStep + 1} / {TRAINING_STEPS.length}
+            </span>
+            <span className="text-sm text-slate-500">
+              {completedSteps.size} {t("training.of")} {TRAINING_STEPS.length} {t("training.completed")}
+            </span>
           </div>
-          
-          {/* Progress Bar */}
-          <div className="mt-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t("training.step")} {currentStep + 1} / {TRAINING_STEPS.length}
-              </span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {completedSteps.size} {t("training.of")} {TRAINING_STEPS.length} {t("training.completed")}
-              </span>
-            </div>
-            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-purple-600 transition-all duration-300" 
-                style={{ width: `${((currentStep) / (TRAINING_STEPS.length - 1)) * 100}%` }}
-              />
-            </div>
+          <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div 
+              className="h-full bg-[#2563EB] transition-all duration-300" 
+              style={{ width: `${((currentStep) / (TRAINING_STEPS.length - 1)) * 100}%` }}
+            />
           </div>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-6">
         {/* Step Navigator */}
         <div className="hidden md:flex items-center gap-1 mb-6 overflow-x-auto pb-2">
           {TRAINING_STEPS.map((s, i) => (
@@ -332,8 +315,8 @@ function TrainingMode() {
             <ArrowRight className="w-4 h-4 inline ml-1" />
           </button>
         </div>
-      </main>
-    </div>
+      </div>
+    </AppShell>
   );
 }
 

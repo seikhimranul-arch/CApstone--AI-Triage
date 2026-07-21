@@ -1,65 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AppShell } from "../../components/AppShell";
 import { DifferentialReviewPanel } from "../../components/DifferentialReviewPanel";
 import { PatientList } from "../../components/PatientList";
-import { PatientFile } from "../../app/page";
 import { useI18n } from "../../lib/i18n";
-import { LanguageSelector } from "../../components/LanguageSelector";
-
-interface TriageDifferentialResponse {
-  success: boolean;
-  differential: Array<{
-    rank: number;
-    icd11_code: string;
-    display: string;
-    probability: "high" | "moderate" | "low";
-    reasoning: string;
-    supporting_evidence: string[];
-    contradicting_evidence: string[];
-    urgency: "emergent" | "urgent" | "routine";
-  }>;
-  red_flags: Array<{
-    type: string;
-    key: string;
-    message: string;
-    value?: number;
-    unit?: string;
-    threshold?: number;
-  }>;
-  suggested_actions: Array<{
-    type: "question" | "test" | "referral";
-    priority: "high" | "medium" | "low";
-    description: string;
-    rationale: string;
-    icd11_link: string[];
-  }>;
-  clinical_summary: string;
-  block_reason: string | null;
-  model_used: string;
-}
-
-interface Conflict {
-  conflict_id: string;
-  type: string;
-  severity: "flag" | "warn" | "block";
-  message: string;
-  intake_value?: any;
-  history_value?: any;
-  disclaimer?: string;
-  requires_acknowledgment: boolean;
-  created_at: string;
-}
-
-interface OverrideLog {
-  override_id: string;
-  differential_id: string;
-  original_rank: number;
-  icd11_code: string;
-  action: "accept" | "reject" | "reorder" | "add";
-  doctor_reason: string;
-  timestamp: string;
-}
+import type { PatientFile, TriageDifferentialResponse, Conflict, OverrideLog } from "../../lib/types";
 
 export default function ReviewPage() {
   const { t } = useI18n();
@@ -90,8 +36,8 @@ export default function ReviewPage() {
       
       let intake: any = {
         abha_id: "",
-        age: patient.age,
-        gender: patient.gender,
+        age: 45,
+        gender: "M",
         symptoms: [],
         vitals: {},
         free_text: "Demo triage for review"
@@ -148,7 +94,7 @@ export default function ReviewPage() {
       // For demo, we'll use a placeholder approach
       const mockAbdmRes = await fetch("/api/patients");
       const allPatients = await mockAbdmRes.json();
-      const p = allPatients.find((pt: any) => pt.archetype === patient.archetype && pt.age === patient.age);
+      const p = allPatients.find((pt: any) => pt.archetype === patient.archetype);
       
       if (p) {
         intake.abha_id = p.abha_id || "";
@@ -208,7 +154,7 @@ export default function ReviewPage() {
     try {
       const mockAbdmRes = await fetch("/api/patients");
       const allPatients = await mockAbdmRes.json();
-      const p = allPatients.find((pt: any) => pt.archetype === selectedPatient?.archetype && pt.age === selectedPatient?.age);
+      const p = allPatients.find((pt: any) => pt.archetype === selectedPatient?.archetype);
       
       if (!p) throw new Error("Patient not found");
       
@@ -275,40 +221,24 @@ export default function ReviewPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">{t("home.loading")}</p>
+      <AppShell>
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[#2563EB] border-t-transparent" />
+            <p className="text-slate-600">{t("home.loading")}</p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold">✍️</div>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">{t("review.title")}</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{t("review.subtitle")}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded">{t("review.phase_badge")}</span>
-              <span>•</span>
-              <span>{t("header.patients_count", { count: patients.length })}</span>
-              <span>•</span>
-              <span>{t("review.override")}</span>
-              <LanguageSelector className="ml-2" />
-            </div>
-          </div>
+    <AppShell>
+      <div className="mx-auto max-w-7xl px-4 py-6 lg:px-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-slate-900">{t("review.title")}</h1>
+          <p className="text-sm text-slate-500">{t("review.subtitle")}</p>
         </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 py-6">
         {!showReview ? (
           <div className="grid lg:grid-cols-12 gap-6">
             <aside className="lg:col-span-4 xl:col-span-3">
@@ -363,8 +293,8 @@ export default function ReviewPage() {
               <div className="flex items-center gap-3">
                 <button onClick={handleCloseReview} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">←</button>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t("review.override_panel_title")}: {selectedPatient?.name || "Patient"}</h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{selectedPatient?.archetype} • {selectedPatient?.age}{selectedPatient?.gender}</p>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t("review.override_panel_title")}: {selectedPatient?.id || "Patient"}</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{selectedPatient?.archetype}</p>
                 </div>
               </div>
             </div>
@@ -385,13 +315,7 @@ export default function ReviewPage() {
             )}
           </div>
         )}
-      </main>
-
-      <footer className="border-t border-gray-200 dark:border-gray-700 mt-8 py-4">
-        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>{t("footer.review")}</p>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </AppShell>
   );
 }

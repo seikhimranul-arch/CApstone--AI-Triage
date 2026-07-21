@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
+import { AppShell } from "../../components/AppShell";
 import { TriageDifferentialPanel } from "../../components/TriageDifferentialPanel";
 import { PatientList } from "../../components/PatientList";
-import { PatientFile } from "../../app/page";
 import { useI18n } from "../../lib/i18n";
-import { LanguageSelector } from "../../components/LanguageSelector";
+import type { PatientFile, TriageDifferentialResponse, Conflict } from "../../lib/types";
 
 interface SymptomEntry {
   icd11_code: string;
@@ -35,50 +35,6 @@ interface SymptomIntakeRequest {
   symptoms: SymptomEntry[];
   vitals: VitalsInput;
   free_text: string;
-}
-
-export interface TriageDifferentialResponse {
-  success: boolean;
-  differential: Array<{
-    rank: number;
-    icd11_code: string;
-    display: string;
-    probability: "high" | "moderate" | "low";
-    reasoning: string;
-    supporting_evidence: string[];
-    contradicting_evidence: string[];
-    urgency: "emergent" | "urgent" | "routine";
-  }>;
-  red_flags: Array<{
-    type: string;
-    key: string;
-    message: string;
-    value?: number;
-    unit?: string;
-    threshold?: number;
-  }>;
-  suggested_actions: Array<{
-    type: "question" | "test" | "referral";
-    priority: "high" | "medium" | "low";
-    description: string;
-    rationale: string;
-    icd11_link: string[];
-  }>;
-  clinical_summary: string;
-  block_reason: string | null;
-  model_used: string;
-}
-
-export interface Conflict {
-  conflict_id: string;
-  type: string;
-  severity: "flag" | "warn" | "block";
-  message: string;
-  intake_value?: any;
-  history_value?: any;
-  disclaimer?: string;
-  requires_acknowledgment: boolean;
-  created_at: string;
 }
 
 export default function TriagePage() {
@@ -261,39 +217,24 @@ export default function TriagePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-600 border-t-transparent mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">Loading patients...</p>
+      <AppShell>
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[#2563EB] border-t-transparent" />
+            <p className="text-slate-600">Loading patients...</p>
+          </div>
         </div>
-      </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center text-white font-bold">🔍</div>
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">SehatAI Triage Assistant</h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Symptom Intake → ABHA History → Differential Diagnosis</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
-              <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded">Phase 3</span>
-              <span>•</span>
-              <span>{patients.length} Patients</span>
-              <span>•</span>
-              <span>ICD-11 Symptom Coding</span>
-            </div>
-          </div>
+    <AppShell>
+      <div className="mx-auto max-w-7xl px-4 py-6 lg:px-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-slate-900">Triage Assistant</h1>
+          <p className="text-sm text-slate-500">Symptom Intake → ABHA History → Differential Diagnosis</p>
         </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 py-6">
         {!showTriage ? (
           <div className="grid lg:grid-cols-12 gap-6">
             <aside className="lg:col-span-4 xl:col-span-3">
@@ -334,8 +275,8 @@ export default function TriagePage() {
               <div className="flex items-center gap-3">
                 <button onClick={() => { setShowTriage(false); setSelectedPatient(null); }} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">←</button>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Symptom Intake: {selectedPatient?.name || "Patient"}</h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{selectedPatient?.archetype} • {selectedPatient?.age}{selectedPatient?.gender}</p>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Symptom Intake: {selectedPatient?.id || "Patient"}</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{selectedPatient?.archetype}</p>
                 </div>
               </div>
             </div>
@@ -498,14 +439,7 @@ export default function TriagePage() {
             onClose={handleCloseTriage}
           />
         )}
-      </main>
-
-      <footer className="border-t border-gray-200 dark:border-gray-700 mt-8 py-4">
-        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-          <p>SehatAI Triage • Phase 3: Differential Engine</p>
-          <p className="mt-1">ABHA-integrated • ICD-11 coded • Conflict-aware</p>
-        </div>
-      </footer>
-    </div>
+      </div>
+    </AppShell>
   );
 }
