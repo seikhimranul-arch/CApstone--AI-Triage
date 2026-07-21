@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: sehat-ai-api
+    runtime: docker
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.12"
+    healthCheckPath: /health
+    autoDeploy: true
