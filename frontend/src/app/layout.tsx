@@ -1,6 +1,7 @@
 "use client";
 
 import { I18nProvider } from "../lib/i18n/I18nContext";
+import { ThemeProvider } from "../lib/theme/ThemeContext";
 import "./globals.css";
 
 export default function RootLayout({
@@ -15,7 +16,9 @@ export default function RootLayout({
         <meta name="description" content="ABHA-integrated clinical decision support assistant for Indian Primary Health Centres. Chart review, differential diagnosis, doctor override, and training." />
       </head>
       <body className="antialiased">
-        <I18nProvider>{children}</I18nProvider>
+        <ThemeProvider>
+          <I18nProvider>{children}</I18nProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -4,8 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "../lib/i18n";
+import { useTheme } from "../lib/theme/ThemeContext";
 import { LanguageSelector } from "./LanguageSelector";
 import { Chatbot } from "./Chatbot";
+import { SehatLogo } from "./SehatLogo";
 
 const NAV_ITEMS = [
   { href: "/app", label: "Dashboard", icon: "grid" },
@@ -39,49 +41,67 @@ function NavIcon({ name }: { name: string }) {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { t } = useI18n();
+  const { theme, toggle } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
+  const isDark = theme === "dark";
+
+  const sidebarBg = isDark ? "bg-halo-sidebar border-halo-border" : "bg-white border-slate-200";
+  const mainBg = isDark ? "bg-halo-bg" : "bg-[#f7f5f0]";
+  const textPrimary = isDark ? "text-white" : "text-slate-900";
+  const textMuted = isDark ? "text-halo-muted" : "text-slate-400";
+  const borderClass = isDark ? "border-halo-border" : "border-slate-100";
+  const navActive = isDark ? "bg-[#5b6ee1]/15 text-[#818cf8]" : "bg-[#1a5276]/10 text-[#1a5276]";
+  const navInactive = isDark ? "text-halo-muted hover:bg-halo-card hover:text-halo-text" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+  const btnMuted = isDark ? "text-halo-muted hover:bg-halo-card hover:text-halo-text" : "text-slate-500 hover:bg-slate-50 hover:text-slate-700";
 
   return (
-    <div className="flex h-screen bg-[#f8fafc]">
+    <div className={`flex h-screen transition-colors ${mainBg}`}>
       {/* Sidebar */}
-      <aside className={`flex flex-col border-r border-slate-200/60 bg-white/80 backdrop-blur-sm transition-all duration-300 ${collapsed ? "w-16" : "w-60"}`}>
+      <aside className={`flex flex-col transition-all duration-300 ${collapsed ? "w-16" : "w-60"} border-r ${sidebarBg}`}>
         {/* Logo */}
-        <div className="flex h-16 items-center gap-3 border-b border-slate-100 px-4">
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#2563EB] to-[#14B8A6] shadow-md shadow-blue-200/50">
-            <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5 text-white">
-              <path d="M12 4C10.5 4 9.2 4.8 8.5 6C7.3 5.6 6 6.4 5.5 7.6C4.5 7.4 3.5 8.2 3.5 9.4C3.5 10.2 4 10.9 4.7 11.2C4.3 12.4 5 13.7 6.2 14C6.5 15.3 7.7 16.2 9 16C9.5 17.1 10.6 17.8 12 17.8C13.4 17.8 14.5 17.1 15 16C16.3 16.2 17.5 15.3 17.8 14C19 13.7 19.7 12.4 19.3 11.2C20 10.9 20.5 10.2 20.5 9.4C20.5 8.2 19.5 7.4 18.5 7.6C18 6.4 16.7 5.6 15.5 6C14.8 4.8 13.5 4 12 4Z" fill="currentColor" fillOpacity="0.95"/>
-              <path d="M8 12.5H16M10 15H14" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeOpacity="0.7"/>
-            </svg>
-          </div>
-          {!collapsed && <span className="text-lg font-semibold tracking-tight text-slate-900">SehatAI</span>}
+        <div className={`flex h-16 items-center gap-3 px-4 border-b ${borderClass}`}>
+          <SehatLogo size="md" dark={isDark} />
+          {!collapsed && (
+            <div>
+              <span className={`text-lg font-semibold tracking-tight ${textPrimary}`}>SehatAI</span>
+              <p className={`text-[10px] font-medium ${textMuted}`}>PHC Clinical Assistant</p>
+            </div>
+          )}
         </div>
 
         {/* User Profile */}
         {!collapsed && (
-          <div className="border-b border-slate-100 px-4 py-3">
+          <div className={`px-4 py-3 border-b ${borderClass}`}>
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2563EB]/10 text-xs font-bold text-[#2563EB]">DR</div>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FF9933]/15 text-xs font-bold text-[#FF9933]">
+                DR
+              </div>
               <div>
-                <p className="text-sm font-medium text-slate-900">Dr. Priya</p>
-                <p className="text-[11px] text-slate-400">PHC Kukatpally</p>
+                <p className={`text-sm font-medium ${textPrimary}`}>Dr. Priya</p>
+                <p className={`text-[11px] ${textMuted}`}>PHC Kukatpally</p>
               </div>
             </div>
           </div>
         )}
 
+        {/* Workspace Label */}
+        {!collapsed && (
+          <div className="px-4 pt-4 pb-2">
+            <p className={`text-[10px] font-semibold uppercase tracking-widest ${textMuted}`}>
+              Workspace
+            </p>
+          </div>
+        )}
+
         {/* Nav Items */}
-        <nav className="flex-1 space-y-1 px-3 py-4">
+        <nav className="flex-1 space-y-0.5 px-3 py-2">
           {NAV_ITEMS.map((item) => {
             const active = pathname === item.href || pathname?.startsWith(item.href + "/");
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
-                  active
-                    ? "bg-[#2563EB]/10 text-[#2563EB]"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                }`}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${active ? navActive : navInactive}`}
                 title={collapsed ? item.label : undefined}
               >
                 <NavIcon name={item.icon} />
@@ -92,11 +112,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
 
         {/* Bottom Actions */}
-        <div className="space-y-1 border-t border-slate-100 px-3 py-3">
+        <div className={`space-y-0.5 px-3 py-3 border-t ${borderClass}`}>
           <LanguageSelector collapsed={collapsed} />
           <button
+            onClick={toggle}
+            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${btnMuted}`}
+            title={collapsed ? (isDark ? "Light mode" : "Dark mode") : undefined}
+          >
+            {isDark ? (
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+            ) : (
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+            )}
+            {!collapsed && (isDark ? "Light Mode" : "Dark Mode")}
+          </button>
+          <button
             onClick={() => setCollapsed(!collapsed)}
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${btnMuted}`}
           >
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               {collapsed ? (
@@ -111,7 +143,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className={`flex-1 overflow-y-auto transition-colors ${mainBg}`}>
         {children}
       </main>
 

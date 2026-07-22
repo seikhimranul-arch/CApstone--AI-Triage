@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useTheme } from "../lib/theme/ThemeContext";
 import type { ChatMessage } from "../lib/types";
 
 interface ChatbotProps {
@@ -8,6 +9,8 @@ interface ChatbotProps {
 }
 
 export function Chatbot({ patientId }: ChatbotProps) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", content: "Namaste! I'm SehatAI Assistant. Ask me about patient summaries, lab reports, drug interactions, or ABHA workflows." },
@@ -75,7 +78,7 @@ export function Chatbot({ patientId }: ChatbotProps) {
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 flex w-[380px] max-w-[calc(100vw-2rem)] flex-col rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-300/50" style={{ height: "520px" }}>
+        <div className={`fixed bottom-6 right-6 z-50 flex w-[380px] max-w-[calc(100vw-2rem)] flex-col rounded-2xl border shadow-2xl ${isDark ? "border-halo-border bg-halo-sidebar shadow-black/50" : "border-slate-200 bg-white shadow-slate-300/50"}`} style={{ height: "520px" }}>
           {/* Header */}
           <div className="flex items-center justify-between rounded-t-2xl bg-gradient-to-r from-[#2563EB] to-[#06B6D4] px-4 py-3">
             <div className="flex items-center gap-2">
@@ -108,7 +111,7 @@ export function Chatbot({ patientId }: ChatbotProps) {
                 <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
                   msg.role === "user"
                     ? "bg-[#2563EB] text-white rounded-br-md"
-                    : "bg-slate-100 text-slate-700 rounded-bl-md"
+                    : isDark ? "bg-halo-card text-halo-text rounded-bl-md" : "bg-slate-100 text-slate-700 rounded-bl-md"
                 }`}>
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 </div>
@@ -116,7 +119,7 @@ export function Chatbot({ patientId }: ChatbotProps) {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="rounded-2xl rounded-bl-md bg-slate-100 px-4 py-3">
+                <div className={`rounded-2xl rounded-bl-md px-4 py-3 ${isDark ? "bg-halo-card" : "bg-slate-100"}`}>
                   <div className="flex gap-1">
                     <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" style={{ animationDelay: "0ms" }} />
                     <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" style={{ animationDelay: "150ms" }} />
@@ -129,7 +132,7 @@ export function Chatbot({ patientId }: ChatbotProps) {
           </div>
 
           {/* Input */}
-          <div className="border-t border-slate-100 px-4 py-3">
+          <div className={`border-t px-4 py-3 ${isDark ? "border-halo-border" : "border-slate-100"}`}>
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}
@@ -138,7 +141,11 @@ export function Chatbot({ patientId }: ChatbotProps) {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Ask about patient, drugs, ABHA..."
-                className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-blue-100"
+                className={`flex-1 rounded-xl px-4 py-2.5 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-1 ${
+                  isDark
+                    ? "border-halo-border bg-halo-card text-white focus:border-[#5b6ee1] focus:ring-[#5b6ee1]/30"
+                    : "border border-slate-200 bg-slate-50 text-slate-900 focus:border-[#2563EB] focus:ring-blue-100"
+                }`}
                 disabled={loading}
               />
               <button
@@ -151,7 +158,7 @@ export function Chatbot({ patientId }: ChatbotProps) {
                 </svg>
               </button>
             </div>
-            <p className="mt-2 text-[10px] text-center text-slate-300">
+            <p className={`mt-2 text-[10px] text-center ${isDark ? "text-halo-muted" : "text-slate-300"}`}>
               AI-assisted guidance — not a substitute for clinical judgment
             </p>
           </div>

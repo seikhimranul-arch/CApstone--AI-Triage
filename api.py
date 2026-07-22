@@ -608,7 +608,7 @@ async def consent_callback(consent_id: str, status: str, artefact: Optional[str]
         except:
             artefact_dict = {"raw": artefact}
     
-    callback = ConsentCallbackRequest(
+    callback = ConsentCallback(
         consent_id=consent_id,
         status=consent_status,
         artefact=artefact_dict,

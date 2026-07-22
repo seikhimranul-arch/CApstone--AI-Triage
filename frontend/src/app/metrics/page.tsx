@@ -22,7 +22,7 @@ function MetricCard({ title, value, change, changeType, icon, color }: MetricCar
                      changeType === "down" ? <TrendingDown className="w-3 h-3" /> : null;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-xl border border-slate-200 dark:border-halo-border bg-white dark:bg-halo-card p-6 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
         <div className={`rounded-lg p-3 ${color} bg-opacity-10`}>
           {icon}
@@ -34,8 +34,8 @@ function MetricCard({ title, value, change, changeType, icon, color }: MetricCar
           </div>
         )}
       </div>
-      <h3 className="text-sm font-medium text-slate-600">{title}</h3>
-      <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
+      <h3 className="text-sm font-medium text-slate-600 dark:text-halo-muted">{title}</h3>
+      <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{value}</p>
     </div>
   );
 }
@@ -173,7 +173,7 @@ export default function MetricsDashboard() {
     return (
       <AppShell>
         <div className="flex min-h-[60vh] items-center justify-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#2563EB] border-t-transparent" />
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-[#1a5276] dark:border-[#5b6ee1] border-t-transparent" />
         </div>
       </AppShell>
     );
@@ -184,13 +184,13 @@ export default function MetricsDashboard() {
       <div className="mx-auto max-w-7xl px-4 py-6 lg:px-6">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">Metrics Dashboard</h1>
-            <p className="text-sm text-slate-500">Pilot Performance Metrics — 50 PHCs across 3 States</p>
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">Metrics Dashboard</h1>
+            <p className="text-sm text-slate-500 dark:text-halo-muted">Pilot Performance Metrics — 50 PHCs across 3 States</p>
           </div>
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900"
+            className="rounded-lg border border-slate-300 dark:border-halo-border bg-white dark:bg-halo-card px-3 py-2 text-sm text-slate-900 dark:text-white"
           >
             <option value="7d">Last 7 Days</option>
             <option value="30d">Last 30 Days</option>

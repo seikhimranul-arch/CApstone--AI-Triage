@@ -85,3 +85,4 @@ frontend/*.log
 # Backup
 *.bak
 *.backup
+PROJECT_CONTEXT.md

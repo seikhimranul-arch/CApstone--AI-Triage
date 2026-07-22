@@ -207,7 +207,9 @@ export default function TriagePage() {
     setTriageConflicts([]);
   };
 
-  const handleAcknowledgeConflict = (conflictId: string) => {};
+  const handleAcknowledgeConflict = (conflictId: string) => {
+    setTriageConflicts((prev) => prev.filter((c) => c.conflict_id !== conflictId));
+  };
 
   const filteredSymptoms = availableSymptoms.filter(
     (s) =>
@@ -220,8 +222,8 @@ export default function TriagePage() {
       <AppShell>
         <div className="flex min-h-[60vh] items-center justify-center">
           <div className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[#2563EB] border-t-transparent" />
-            <p className="text-slate-600">Loading patients...</p>
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-[#1a5276] dark:border-[#5b6ee1] border-t-transparent" />
+            <p className="text-slate-600 dark:text-halo-muted">{t("home.loading")}</p>
           </div>
         </div>
       </AppShell>
@@ -232,8 +234,8 @@ export default function TriagePage() {
     <AppShell>
       <div className="mx-auto max-w-7xl px-4 py-6 lg:px-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-slate-900">Triage Assistant</h1>
-          <p className="text-sm text-slate-500">Symptom Intake → ABHA History → Differential Diagnosis</p>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">Triage Assistant</h1>
+          <p className="text-sm text-slate-500 dark:text-halo-muted">Symptom Intake → ABHA History → Differential Diagnosis</p>
         </div>
         {!showTriage ? (
           <div className="grid lg:grid-cols-12 gap-6">

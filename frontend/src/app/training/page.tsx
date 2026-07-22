@@ -110,21 +110,21 @@ function TrainingMode() {
       {/* Progress Bar */}
       <div className="mx-auto max-w-4xl px-4 py-6 lg:px-6">
         <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-slate-900">{t("training.title")}</h1>
-          <p className="text-sm text-slate-500">{t("training.description")}</p>
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">{t("training.title")}</h1>
+          <p className="text-sm text-slate-500 dark:text-halo-muted">{t("training.description")}</p>
         </div>
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-700 dark:text-halo-text">
               {t("training.step")} {currentStep + 1} / {TRAINING_STEPS.length}
             </span>
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-slate-500 dark:text-halo-muted">
               {completedSteps.size} {t("training.of")} {TRAINING_STEPS.length} {t("training.completed")}
             </span>
           </div>
-          <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
+          <div className="h-2 rounded-full bg-slate-200 dark:bg-halo-border overflow-hidden">
             <div 
-              className="h-full bg-[#2563EB] transition-all duration-300" 
+              className="h-full bg-[#1a5276] dark:bg-[#5b6ee1] transition-all duration-300" 
               style={{ width: `${((currentStep) / (TRAINING_STEPS.length - 1)) * 100}%` }}
             />
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "../lib/i18n";
+import { useTheme } from "../lib/theme/ThemeContext";
 import { useState, useRef, useEffect } from 'react';
 
 const LANGUAGES = [
@@ -12,8 +13,10 @@ const LANGUAGES = [
 
 export function LanguageSelector({ collapsed = false }: { collapsed?: boolean }) {
   const { locale, setLocale } = useI18n();
+  const { theme } = useTheme();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const isDark = theme === "dark";
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -29,7 +32,11 @@ export function LanguageSelector({ collapsed = false }: { collapsed?: boolean })
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+          isDark
+            ? "text-halo-muted hover:bg-halo-card hover:text-halo-text"
+            : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+        }`}
         title={collapsed ? "Language" : undefined}
       >
         <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -39,18 +46,28 @@ export function LanguageSelector({ collapsed = false }: { collapsed?: boolean })
       </button>
 
       {open && (
-        <div className="absolute bottom-full left-0 mb-2 w-40 rounded-xl border border-slate-200 bg-white py-1 shadow-xl z-50">
+        <div className={`absolute bottom-full left-0 mb-2 w-44 rounded-xl py-1 shadow-xl z-50 ${
+          isDark
+            ? "bg-halo-card border border-halo-border"
+            : "bg-white border border-slate-200"
+        }`}>
           {LANGUAGES.map((lang) => (
             <button
               key={lang.code}
               onClick={() => { setLocale(lang.code); setOpen(false); }}
               className={`flex w-full items-center gap-3 px-3 py-2 text-sm transition-colors ${
-                locale === lang.code ? "bg-blue-50 font-medium text-[#2563EB]" : "text-slate-700 hover:bg-slate-50"
+                locale === lang.code
+                  ? isDark
+                    ? "bg-[#5b6ee1]/15 text-[#818cf8] font-medium"
+                    : "bg-blue-50 text-[#1a5276] font-medium"
+                  : isDark
+                    ? "text-halo-text hover:bg-halo-card-hover"
+                    : "text-slate-700 hover:bg-slate-50"
               }`}
             >
               {lang.label}
               {locale === lang.code && (
-                <svg className="ml-auto h-4 w-4 text-[#2563EB]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className={`ml-auto h-4 w-4 ${isDark ? "text-[#818cf8]" : "text-[#1a5276]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                 </svg>
               )}

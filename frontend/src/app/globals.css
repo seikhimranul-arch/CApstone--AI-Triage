@@ -3,22 +3,34 @@
 @import "tailwindcss/utilities";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --brand-blue: #2563EB;
+  --background: #f7f5f0;
+  --foreground: #1a1a2e;
+  --saffron: #FF9933;
+  --green: #138808;
+  --brand-navy: #1a5276;
   --brand-teal: #14B8A6;
+}
+
+.dark {
+  --background: #0c0e14;
+  --foreground: #e5e7eb;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', 'Noto Sans Devanagari', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  .text-balance { text-wrap: balance; }
+  .dark .dark\:border-halo-border { border-color: #1e2330; }
+  .dark .dark\:bg-halo-bg { background-color: #0c0e14; }
+  .dark .dark\:bg-halo-sidebar { background-color: #12151e; }
+  .dark .dark\:bg-halo-card { background-color: #161a25; }
+  .dark .dark\:bg-halo-card-hover { background-color: #1a1f2e; }
+  .dark .dark\:text-halo-text { color: #e5e7eb; }
+  .dark .dark\:text-halo-muted { color: #6b7280; }
 }
 
 .animate-fade-in {
@@ -60,4 +72,40 @@ body {
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-12px); }
+}
+
+/* Light mode Indian-inspired background */
+.indian-pattern {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255, 153, 51, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(19, 136, 8, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 50% 0%, rgba(26, 82, 118, 0.03) 0%, transparent 50%);
+}
+
+/* Dark mode halo background */
+.halo-glow {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(91, 110, 225, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(34, 197, 94, 0.06) 0%, transparent 50%);
+}
+
+.saffron-accent {
+  background: linear-gradient(135deg, #FF9933 0%, #FFB366 100%);
+}
+.green-accent {
+  background: linear-gradient(135deg, #138808 0%, #2EAD1A 100%);
+}
+
+.abha-card {
+  border: 1px solid rgba(26, 82, 118, 0.12);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+.dark .abha-card {
+  border: 1px solid rgba(91, 110, 225, 0.15);
+  background: linear-gradient(135deg, #161a25 0%, #12151e 100%);
+}
+
+.dots-pattern {
+  background-image: radial-gradient(circle, currentColor 0.5px, transparent 0.5px);
+  background-size: 16px 16px;
 }
