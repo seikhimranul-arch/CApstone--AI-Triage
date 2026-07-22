@@ -8,12 +8,24 @@ interface ChatbotProps {
   patientId?: string | null;
 }
 
+function renderMarkdown(text: string): string {
+  const withBullets = text.replace(/^• (.*$)/gm, '<li class="ml-4 list-disc">$1</li>');
+  const withDisclaimer = withBullets.replace(/^⚠ (.*$)/gm, '<div class="mt-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 px-3 py-2 text-amber-700 dark:text-amber-300 text-xs">⚠ $1</div>');
+  const withBold = withDisclaimer.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  const withItalic = withBold.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  // Wrap consecutive <li> elements in <ul>
+  return withItalic.replace(/((?:<li[^>]*>.*?<\/li>\s*)+)/g, '<ul class="space-y-1 my-1">$1</ul>');
+}
+
 export function Chatbot({ patientId }: ChatbotProps) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: "assistant", content: "Namaste! I'm SehatAI Assistant. Ask me about patient summaries, lab reports, drug interactions, or ABHA workflows." },
+    {
+      role: "assistant",
+      content: "**Namaste! I'm SehatAI Clinical Assistant.** 🩺\n\nI provide clinical decision **support** — suggestions for you to evaluate.\n\n• Disease protocols (DM, HTN, TB, ANC)\n• Drug interaction checks\n• ICD-11 coding reference\n• ABHA workflow help\n\nWhat clinical question can I help with?\n\n⚠ *All outputs are suggestions. Please verify with your clinical judgment.*",
+    },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -50,7 +62,7 @@ export function Chatbot({ patientId }: ChatbotProps) {
       const data = await res.json();
       setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
     } catch {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, I encountered an error. Please try again." }]);
+      setMessages((prev) => [...prev, { role: "assistant", content: "Sorry, I encountered an error. Please try again.\n\n⚠ *SehatAI is a clinical decision support tool. It does not replace professional medical judgment.*" }]);
     } finally {
       setLoading(false);
     }
@@ -90,7 +102,7 @@ export function Chatbot({ patientId }: ChatbotProps) {
               <div>
                 <h3 className="text-sm font-semibold text-white">SehatAI Assistant</h3>
                 <p className="text-[10px] text-white/70">
-                  {patientId ? `Context: ${patientId}` : "General clinical queries"}
+                  {patientId ? `Context: ${patientId}` : "Clinical decision support"}
                 </p>
               </div>
             </div>
@@ -113,7 +125,14 @@ export function Chatbot({ patientId }: ChatbotProps) {
                     ? "bg-[#2563EB] text-white rounded-br-md"
                     : isDark ? "bg-halo-card text-halo-text rounded-bl-md" : "bg-slate-100 text-slate-700 rounded-bl-md"
                 }`}>
-                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                  {msg.role === "assistant" ? (
+                    <div
+                      className="whitespace-pre-wrap [&_strong]:font-semibold [&_strong]:text-inherit [&_em]:italic [&_em]:text-inherit [&_ul]:my-1 [&_li]:ml-4 [&_li]:list-disc"
+                      dangerouslySetInnerHTML={{ __html: renderMarkdown(msg.content) }}
+                    />
+                  ) : (
+                    <p className="whitespace-pre-wrap">{msg.content}</p>
+                  )}
                 </div>
               </div>
             ))}
@@ -129,6 +148,13 @@ export function Chatbot({ patientId }: ChatbotProps) {
               </div>
             )}
             <div ref={messagesEndRef} />
+          </div>
+
+          {/* Disclaimer Banner */}
+          <div className={`px-4 py-2 border-t ${isDark ? "border-halo-border bg-amber-900/10" : "border-amber-100 bg-amber-50"}`}>
+            <p className="text-[10px] text-center text-amber-600 dark:text-amber-400 font-medium">
+              AI suggestions only — final decisions rest with the physician
+            </p>
           </div>
 
           {/* Input */}
@@ -158,9 +184,6 @@ export function Chatbot({ patientId }: ChatbotProps) {
                 </svg>
               </button>
             </div>
-            <p className={`mt-2 text-[10px] text-center ${isDark ? "text-halo-muted" : "text-slate-300"}`}>
-              AI-assisted guidance — not a substitute for clinical judgment
-            </p>
           </div>
         </div>
       )}

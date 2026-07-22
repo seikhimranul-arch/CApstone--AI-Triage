@@ -1,19 +1,115 @@
 import { NextResponse } from 'next/server';
 
-// Expanded clinical knowledge base for the chatbot
 const CLINICAL_KB: Record<string, string> = {
-  fever: "Fever (ICD-11: MG44) management:\n• Basic workup: CBC, Malaria smear, Blood culture if high-grade\n• For PHC: Paracetamol 500-1000mg QID, tepid sponging >39°C\n• Red flags: Fever >5 days, rash, neck stiffness, altered sensorium\n• TB suspect: If fever >2 weeks + night sweats + weight loss → sputum AFB",
-  cough: "Cough (ICD-11: MD11) approach:\n• Acute (<3 weeks): Most viral, antibiotics not needed\n• Chronic (>8 weeks): TB, asthma, GERD differentials\n• Hemoptysis (MD15): Always rule out TB first in Indian PHC setting\n• IMNCI: If child <5yrs with cough + fast breathing = pneumonia",
-  diabetes: "Diabetes management at PHC:\n• HbA1c target: <7% (individualize for elderly)\n• First line: Metformin 500mg BD → titrate to 1g BD\n• If HbA1c >9% after 3mo dual therapy → start insulin\n• Monitor: HbA1c every 3mo, creatinine annually, eye exam yearly\n• Drug interactions: Metformin + contrast → hold 48h",
-  hypertension: "HTN management (NPCDCS guidelines):\n• Stage 1 (140-159/90-99): Lifestyle + single drug\n• Stage 2 (≥160/≥100): Two drug combination\n• First line: ACEi/ARB + CCB or Thiazide\n• Target: <140/90 (<130/80 if DM)\n• Avoid: ACEi in pregnancy, NSAIDs with ACEi+diuretic",
-  tb: "TB treatment (RNTCP/NTEP):\n• Category I: 2HRZE/4HR (new cases)\n• Category II: 2HRZES/1HRZE/5HRE (retreatment)\n• DOT mandatory, video DOT preferred\n• Missed doses: >1 dose in month → classify as defaulter\n• MDR suspect: If sputum positive at month 5 → GeneXpert",
-  child: "Pediatric assessment (IMNCI):\n• Check: Temperature, Respiratory rate, Weight, MUAC\n• Pneumonia: Fast breathing OR chest indrawing → Amoxicillin\n• Diarrhea: ORS + Zinc (20mg x 14 days)\n• Malnutrition: MUAC <115mm = SAM → referral\n• Danger signs: Not able to drink/breastfeed, convulsions, lethargy",
-  pregnancy: "ANC care (FRU guidelines):\n• 4+ visits minimum (AIIMS protocol)\n• BP monitoring every visit → if ≥140/90 → label GH\n• Proteinuria: Dipstick at every visit\n• Anemia: Hb <7 → transfusion, Hb 7-10 → Iron sucrose\n• GDM: OGTT at 24-28 weeks, insulin if fasting >95",
-  drugs: "Common drug interactions at PHC:\n• Triple whammy: NSAID + ACEi + Diuretic → AKI\n• Warfarin + NSAID → bleeding risk\n• Metformin + contrast → hold 48h\n• Methotrexate + Trimethoprim → pancytopenia\n• SSRI + Tramadol → serotonin syndrome",
-  abdm: "ABDM/ABHA workflow:\n1. Patient provides 14-digit ABHA ID\n2. OTP sent to linked mobile\n3. Consent granted for specific HI types\n4. Records fetched from HIE (FHIR format)\n5. Encounter summary written back to ABHA\n• All consent artefacts logged with timestamps\n• Patient can revoke consent anytime",
-  icd11: "ICD-11 coding reference:\n• A00-B99: Infectious diseases (TB = 1B10)\n• E00-E89: Endocrine (DM = 5A11)\n• I00-I99: Circulatory (HTN = BA00)\n• J00-J99: Respiratory\n• N00-N99: Genitourinary\n• O00-O9A: Pregnancy\n• P00-P96: Perinatal\n• Z00-Z99: Factors influencing health status",
-  triage: "Triage severity levels:\n• EMERGENCY (Red): Chest pain, severe bleeding, seizures, shock\n• URGENT (Orange): High fever + dehydration, acute abdomen,MODS\n• SEMI-URGENT (Yellow): Persistent vomiting, moderate pain\n• NON-URGENT (Green): Chronic disease follow-up, minor complaints\n• In PHC: Use IMNCI for children, NPCDCS for NCDs",
+  fever: `**Suggested Evaluation (Fever — MG44):**
+• Consider CBC, malaria smear, blood culture if high-grade
+• Paracetamol 500-1000mg QID; tepid sponging if >39°C
+• **Flag if:** Fever >5 days, rash, neck stiffness, altered sensorium → refer
+
+⚠ *This is a clinical suggestion. Please verify based on patient presentation.*`,
+
+  cough: `**Suggested Approach (Cough — MD11):**
+• Acute (<3 weeks): Likely viral, antibiotics usually not needed
+• Chronic (>8 weeks): Consider TB, asthma, GERD
+• Hemoptysis → Always rule out TB first in PHC setting
+• IMNCI: Child <5yr + fast breathing = pneumonia → Amoxicillin
+
+⚠ *Please correlate with examination findings before initiating treatment.*`,
+
+  diabetes: `**Suggested DM Management (PHC Protocol):**
+• HbA1c target: <7% (individualize for elderly/frail)
+• First line: Metformin 500mg BD → titrate to 1g BD
+• If HbA1c >9% after 3mo dual therapy → consider insulin
+• Monitor: HbA1c every 3mo, creatinine annually
+
+⚠ *Please review current medications and adjust per patient-specific factors.*`,
+
+  hypertension: `**Suggested HTN Protocol (NPCDCS):**
+• Stage 1 (140-159/90-99): Lifestyle + single drug
+• Stage 2 (≥160/≥100): Two-drug combination
+• Target: <140/90 (<130/80 if DM)
+• Avoid: ACEi in pregnancy, NSAIDs with ACEi+diuretic
+
+⚠ *Please confirm BP readings and patient-specific contraindications.*`,
+
+  tb: `**Suggested TB Protocol (NTEP):**
+• New case: 2HRZE/4HR (Category I)
+• Missed doses >1 in month → classify as defaulter
+• Month 5 sputum positive → GeneXpert for MDR suspect
+• DOT mandatory, video DOT preferred
+
+⚠ *Please verify adherence history and current regimen compliance.*`,
+
+  anc: `**Suggested ANC Protocol (FRU Guidelines):**
+• Minimum 4 antenatal visits
+• BP every visit → if ≥140/90 → label Gestational HTN
+• Hb <7: consider transfusion; 7-10: Iron sucrose
+• GDM: OGTT at 24-28 weeks
+
+⚠ *Please assess individual risk profile before treatment decisions.*`,
+
+  child: `**Suggested Pediatric Assessment (IMNCI):**
+• Check: Temp, RR, Weight, MUAC
+• Pneumonia: Fast breathing OR chest indrawing → Amoxicillin
+• Diarrhea: ORS + Zinc (20mg × 14 days)
+• MUAC <115mm = SAM → refer
+
+⚠ *Please complete full IMNCI assessment before classifying.*`,
+
+  drugs: `**Potential Drug Interactions (Review Required):**
+• Triple whammy: NSAID + ACEi + Diuretic → AKI risk
+• Metformin + contrast dye → hold 48h
+• Warfarin + NSAID → bleeding risk
+• Methotrexate + Trimethoprim → pancytopenia
+
+⚠ *Please cross-check with patient's current medication list.*`,
+
+  triage: `**Triage Severity Guide (Reference Only):**
+• EMERGENCY (Red): Chest pain, severe bleeding, seizures, shock
+• URGENT (Orange): High fever + dehydration, acute abdomen
+• SEMI-URGENT (Yellow): Persistent vomiting, moderate pain
+• NON-URGENT (Green): Chronic follow-up, minor complaints
+
+⚠ *Final triage decision rests with the attending physician.*`,
+
+  abdm: `**ABHA Workflow Summary:**
+1. Patient provides 14-digit ABHA ID
+2. OTP sent to linked mobile → verify
+3. Consent granted for specific HI types
+4. Records fetched (FHIR format)
+5. Encounter summary written back
+
+⚠ *Always obtain explicit patient consent before accessing records.*`,
+
+  icd11: `**ICD-11 Quick Reference:**
+• A00-B99: Infectious (TB = 1B10)
+• E00-E89: Endocrine (DM = 5A11)
+• I00-I99: Circulatory (HTN = BA00)
+• O00-O9A: Pregnancy-related
+• Z00-Z99: Health status factors
+
+⚠ *Please confirm coding with clinical findings.*`,
 };
+
+function findBestMatch(message: string): string | null {
+  const lower = message.toLowerCase();
+  let bestMatch: string | null = null;
+  let bestScore = 0;
+
+  for (const [keyword, content] of Object.entries(CLINICAL_KB)) {
+    const words = keyword.split(" ");
+    let score = 0;
+    for (const word of words) {
+      if (lower.includes(word)) score++;
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = content;
+    }
+  }
+
+  return bestScore > 0 ? bestMatch : null;
+}
 
 export async function POST(request: Request) {
   try {
@@ -37,49 +133,85 @@ export async function POST(request: Request) {
       clearTimeout(timeout);
       if (response.ok) {
         const data = await response.json();
-        return NextResponse.json({ reply: data.reply || data.response || data.message });
+        const reply = data.reply || data.response || data.message;
+        // Ensure backend replies also include disclaimer
+        if (!reply.includes("⚠")) {
+          return NextResponse.json({ reply: reply + "\n\n⚠ *SehatAI provides clinical decision support. Final decisions rest with the physician.*" });
+        }
+        return NextResponse.json({ reply });
       }
     } catch {
       // Python backend unreachable — use local knowledge base
     }
 
-    // Local clinical knowledge base matching
     const lower = message.toLowerCase();
     let reply = "";
 
-    // Search the knowledge base for matching topics
-    let bestMatch = "";
-    let bestScore = 0;
-    for (const [keyword, content] of Object.entries(CLINICAL_KB)) {
-      const words = keyword.split(" ");
-      let score = 0;
-      for (const word of words) {
-        if (lower.includes(word)) score++;
-      }
-      if (score > bestScore) {
-        bestScore = score;
-        bestMatch = content;
-      }
-    }
+    // Greeting
+    if (lower.includes("hello") || lower.includes("namaste") || lower.includes("hi")) {
+      reply = `**Namaste! I'm SehatAI Clinical Assistant.** 🩺
 
-    if (bestScore > 0) {
-      reply = bestMatch;
-    } else if (lower.includes("hello") || lower.includes("namaste") || lower.includes("hi")) {
-      reply = "Namaste! I'm SehatAI Clinical Assistant. I can help with:\n\n• Disease management protocols (DM, HTN, TB, ANC)\n• Drug interactions and prescriptions\n• ICD-11 coding assistance\n• IMNCI/NPCDCS guidelines\n• ABHA workflow guidance\n• Triage severity assessment\n\nWhat would you like to know?";
-    } else if (lower.includes("patient") || lower.includes("summary") || lower.includes("history")) {
+I can help with clinical decision **support** — here's what I can suggest:
+• Disease protocols (DM, HTN, TB, ANC, Pediatric)
+• Drug interaction checks
+• ICD-11 coding reference
+• Triage severity guidance
+• ABHA workflow help
+
+**What clinical question can I help with?**
+
+⚠ *All outputs are suggestions. Please verify with your clinical judgment.*`;
+    }
+    // Patient context
+    else if (lower.includes("patient") || lower.includes("summary") || lower.includes("history")) {
       reply = patient_id
-        ? `Loading clinical context for patient ${patient_id}.\n\nThe AI summary includes:\n• One-liner overview\n• Active problems with ICD-11 codes\n• Red flags and alerts\n• Medication reconciliation\n• Missing data suggestions\n\nNavigate to the Dashboard tab to view the full clinical summary.`
-        : "To get a patient summary, select a patient from the Dashboard. The summary pulls from ABHA-linked records and generates a structured clinical overview with red flags.";
-    } else if (lower.includes("thank") || lower.includes("thanks")) {
-      reply = "You're welcome! Feel free to ask if you have more clinical questions.";
-    } else {
-      reply = `I can help with clinical queries. Try asking about:\n\n• **Fever** — differential diagnosis and management\n• **Diabetes** — treatment protocols (DM)\n• **Hypertension** — BP management (HTN)\n• **TB** — DOTS regimen and follow-up\n• **Pediatric** — IMNCI assessment\n• **Pregnancy** — ANC care protocols\n• **Drugs** — interaction checks\n• **ABHA** — consent and record workflow\n• **ICD-11** — coding reference\n\nWhat clinical topic would you like to explore?`;
+        ? `**Loading clinical context for patient ${patient_id}.**
+
+The AI summary includes:
+• One-liner overview
+• Active problems with ICD-11 codes
+• Red flags and alerts
+• Medication reconciliation
+
+👉 Navigate to the Dashboard tab to view the full clinical summary.
+
+⚠ *Please review the summary against your own examination findings.*`
+        : `**To get a patient summary, select a patient from the Dashboard.**
+
+The summary pulls from ABHA-linked records and generates a structured overview with red flags.
+
+⚠ *AI summaries are decision-support aids, not replacements for clinical assessment.*`;
+    }
+    // Thank you
+    else if (lower.includes("thank") || lower.includes("thanks")) {
+      reply = "You're welcome! Feel free to ask more clinical questions.\n\n⚠ *Always verify suggestions with patient-specific clinical findings.*";
+    }
+    // Clinical knowledge base matching
+    else {
+      const match = findBestMatch(message);
+      if (match) {
+        reply = match;
+      } else {
+        reply = `**I can suggest on these clinical topics:**
+• **Fever** — differential & management
+• **Cough** — acute vs chronic approach
+• **Diabetes** — PHC treatment protocol
+• **Hypertension** — NPCDCS guidelines
+• **TB** — DOTS regimen & follow-up
+• **ANC** — antenatal care protocol
+• **Pediatric** — IMNCI assessment
+• **Drugs** — interaction checks
+• **ABHA** — consent & record workflow
+• **ICD-11** — coding reference
+
+⚠ *SehatAI provides decision support only. All clinical decisions must be made by the attending physician based on individual patient assessment.*`;
+      }
     }
 
     return NextResponse.json({ reply });
   } catch {
     return NextResponse.json(
-      { reply: "I'm experiencing a temporary issue. Please try again." },
+      { reply: "I'm experiencing a temporary issue. Please try again.\n\n⚠ *SehatAI is a clinical decision support tool. It does not replace professional medical judgment.*" },
       { status: 500 }
     );
   }

@@ -68,6 +68,7 @@ export default function ChartReviewPage() {
   const [summary, setSummary] = useState<any | null>(null);
   const [abhaRecords, setAbhaRecords] = useState<AbhaRecords | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<string>("all");
   const [activeTab, setActiveTab] = useState<"overview" | "vitals" | "labs" | "consultations" | "medications">("overview");
@@ -99,7 +100,10 @@ export default function ChartReviewPage() {
       ]);
       const sumData = await sumRes.json();
       const abhaData = await abhaRes.json();
-      if (sumData.success) setSummary(sumData.summary);
+      if (sumData.success) {
+        setSummary(sumData.summary);
+        setShowSummary(true);
+      }
       setAbhaRecords(abhaData);
     } catch (e) {
       console.error("Failed to load patient:", e);
@@ -220,20 +224,64 @@ export default function ChartReviewPage() {
               </div>
 
               {/* Tabs */}
-              <div className={`flex gap-1 rounded-xl p-1 shadow-sm ${isDark ? "border border-halo-border bg-halo-card" : "border border-slate-200 bg-white"}`}>
-                {(["overview", "vitals", "labs", "consultations", "medications"] as const).map((tab) => (
-                  <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-all capitalize ${
-                    activeTab === tab
-                      ? isDark ? "bg-[#5b6ee1] text-white shadow-sm" : "bg-[#1a5276] text-white shadow-sm"
-                      : isDark ? "text-halo-muted hover:bg-halo-card-hover" : "text-slate-600 hover:bg-slate-50"
-                  }`}>{tab}</button>
-                ))}
+              <div className={`flex items-center gap-2 rounded-xl p-1 shadow-sm ${isDark ? "border border-halo-border bg-halo-card" : "border border-slate-200 bg-white"}`}>
+                <div className="flex flex-1 gap-1">
+                  {(["overview", "vitals", "labs", "consultations", "medications"] as const).map((tab) => (
+                    <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-all capitalize ${
+                      activeTab === tab
+                        ? isDark ? "bg-[#5b6ee1] text-white shadow-sm" : "bg-[#1a5276] text-white shadow-sm"
+                        : isDark ? "text-halo-muted hover:bg-halo-card-hover" : "text-slate-600 hover:bg-slate-50"
+                    }`}>{tab}</button>
+                  ))}
+                </div>
+                {/* Language Switcher */}
+                <div className={`flex items-center gap-1 rounded-lg px-2 py-1 ${isDark ? "bg-halo-bg" : "bg-slate-100"}`}>
+                  <button
+                    onClick={() => { if (typeof window !== "undefined") localStorage.setItem("sehat-lang", "en"); window.location.reload(); }}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+                      (typeof window !== "undefined" && localStorage.getItem("sehat-lang")) !== "hi"
+                        ? isDark ? "bg-[#5b6ee1] text-white" : "bg-[#1a5276] text-white"
+                        : isDark ? "text-halo-muted hover:text-white" : "text-slate-500 hover:text-slate-900"
+                    }`}
+                  >EN</button>
+                  <button
+                    onClick={() => { if (typeof window !== "undefined") localStorage.setItem("sehat-lang", "hi"); window.location.reload(); }}
+                    className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-colors ${
+                      (typeof window !== "undefined" && localStorage.getItem("sehat-lang")) === "hi"
+                        ? isDark ? "bg-[#5b6ee1] text-white" : "bg-[#1a5276] text-white"
+                        : isDark ? "text-halo-muted hover:text-white" : "text-slate-500 hover:text-slate-900"
+                    }`}
+                  >HI</button>
+                </div>
               </div>
 
               {/* Tab Content */}
               {activeTab === "overview" && (
                 <div className="space-y-6">
-                  <ClinicalSummaryPanel summary={summary} onClose={() => {}} />
+                  {showSummary && summary && (
+                    <ClinicalSummaryPanel summary={summary} onClose={() => setShowSummary(false)} />
+                  )}
+
+                  {/* Reopen Summary Button */}
+                  {!showSummary && summary && (
+                    <button
+                      onClick={() => setShowSummary(true)}
+                      className={`w-full rounded-2xl border-2 border-dashed p-4 text-left transition-all hover:shadow-md ${
+                        isDark ? "border-[#5b6ee1]/30 hover:border-[#5b6ee1]/60 bg-halo-card" : "border-[#1a5276]/20 hover:border-[#1a5276]/40 bg-white"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${isDark ? "bg-[#5b6ee1]/15" : "bg-[#1a5276]/10"}`}>
+                          <svg className={`h-5 w-5 ${isDark ? "text-[#818cf8]" : "text-[#1a5276]"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" /></svg>
+                        </div>
+                        <div>
+                          <p className={`text-sm font-semibold ${isDark ? "text-white" : "text-slate-900"}`}>View AI Clinical Summary</p>
+                          <p className={`text-xs ${isDark ? "text-halo-muted" : "text-slate-500"}`}>Click to review red flags, medications & active problems</p>
+                        </div>
+                        <svg className={`ml-auto h-4 w-4 ${isDark ? "text-halo-muted" : "text-slate-400"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                      </div>
+                    </button>
+                  )}
 
                   {/* Latest Vitals Card */}
                   {latestVitals && (
