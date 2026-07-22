@@ -59,7 +59,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className={`flex flex-col transition-all duration-300 ${collapsed ? "w-16" : "w-60"} border-r ${sidebarBg}`}>
         {/* Logo */}
-        <div className={`flex h-16 items-center gap-3 px-4 border-b ${borderClass}`}>
+        <Link href="/" className={`flex h-16 items-center gap-3 px-4 border-b ${borderClass} hover:opacity-80 transition-opacity`}>
           <SehatLogo size="md" dark={isDark} />
           {!collapsed && (
             <div>
@@ -67,7 +67,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <p className={`text-[10px] font-medium ${textMuted}`}>PHC Clinical Assistant</p>
             </div>
           )}
-        </div>
+        </Link>
 
         {/* User Profile */}
         {!collapsed && (
